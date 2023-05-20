@@ -1,7 +1,6 @@
-// MainPage.js
 import React, { useState } from 'react';
-import { Container, Input, FormGroup, Table } from 'reactstrap';
-import { fetchBreeds } from '../api';
+import { Container, Input, FormGroup, Table, Row, Col } from 'reactstrap';
+import { fetchBreeds, fetchRandomBreed } from '../api';
 import Navigation from '../components/Navbar';
 import CustomButton from '../components/CustomButton';
 
@@ -25,6 +24,15 @@ function Main() {
     }
   };
 
+  const handleFetchRandomBreed = async () => {
+    try {
+      const randomBreed = await fetchRandomBreed();
+      setBreeds([randomBreed]);
+    } catch (error) {
+      console.error(`Error: ${error}`);
+    }
+  };
+
   return (
     <>
       <Navigation />
@@ -37,9 +45,18 @@ function Main() {
             value={breedInput}
             onChange={handleInputChange}
           />
-          <CustomButton color="primary" onClick={handleFetchBreed}>
-            Search
-          </CustomButton>
+          <Row className="justify-content-center">
+            <Col xs="auto">
+              <CustomButton color="primary" onClick={handleFetchBreed}>
+                Search
+              </CustomButton>
+            </Col>
+            <Col xs="auto">
+              <CustomButton color="secondary" onClick={handleFetchRandomBreed}>
+                Random Breed
+              </CustomButton>
+            </Col>
+          </Row>
         </FormGroup>
         <Table>
           <thead>

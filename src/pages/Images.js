@@ -63,23 +63,15 @@ function Images() {
             value={breedInput}
             onChange={handleInputChange}
           />
-          <Row className="d-flex justify-content-around align-items-center button-row">
-            <Col xs={12} sm={5}>
-              <CustomButton
-                color="primary"
-                onClick={handleFetchBreedImages}
-                block
-              >
+          <Row className="justify-content-center">
+            <Col xs="auto">
+              <CustomButton color="primary" onClick={handleFetchBreedImages}>
                 Search
               </CustomButton>
             </Col>
-            <Col xs={12} sm={5}>
-              <CustomButton
-                color="secondary"
-                onClick={handleFetchRandomImages}
-                block
-              >
-                Get 10 random images
+            <Col xs="auto">
+              <CustomButton color="secondary" onClick={handleFetchRandomImages}>
+                Random Images
               </CustomButton>
             </Col>
           </Row>

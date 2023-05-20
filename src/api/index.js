@@ -1,4 +1,3 @@
-// api/index.js
 import axios from 'axios';
 
 const BASE_URL = 'https://api.thecatapi.com/v1';
@@ -36,11 +35,6 @@ export const fetchBreed = async breedId => {
   return response.data;
 };
 
-// export const fetchBreeds = async () => {
-//   const response = await axios.get(`${BASE_URL}/breeds`);
-//   return response.data;
-// };
-
 export const fetchRandomImage = async () => {
   const response = await axios.get(`${BASE_URL}/images/search`);
   return response.data;
@@ -51,15 +45,8 @@ export const fetchRandomImages = async (limit = 10) => {
   return response.data;
 };
 
-// export const fetchBreedImages = async breed => {
-//   try {
-//     const response = await axios.get(
-//       `${BASE_URL}/images/search?limit=10&breed_ids=${breed}`
-//     );
-//     console.log(response);
-//     return response.data;
-//   } catch (error) {
-//     console.error(`Error fetching images for breed ${breed}:`, error);
-//     return [];
-//   }
-// };
+export const fetchRandomBreed = async () => {
+  const allBreeds = await fetchBreeds();
+  const randomIndex = Math.floor(Math.random() * allBreeds.length);
+  return allBreeds[randomIndex];
+};

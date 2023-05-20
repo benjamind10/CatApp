@@ -1,8 +1,9 @@
 // InfoPage.js
 import React, { useEffect, useState } from 'react';
-import { Container, Button, Input, FormGroup } from 'reactstrap';
+import { Container, Input, FormGroup } from 'reactstrap';
 import { fetchBreeds, fetchBreedImages } from '../api';
 import Navigation from '../components/Navbar';
+import CustomButton from '../components/CustomButton';
 
 function Images() {
   const [breedInput, setBreedInput] = useState('');
@@ -51,9 +52,9 @@ function Images() {
             value={breedInput}
             onChange={handleInputChange}
           />
-          <Button color="primary" onClick={handleFetchBreedImages}>
+          <CustomButton color="primary" onClick={handleFetchBreedImages}>
             Search
-          </Button>
+          </CustomButton>
         </FormGroup>
         {selectedBreedImages.map((image, index) => (
           <img

@@ -1,8 +1,9 @@
 // MainPage.js
 import React, { useState } from 'react';
-import { Container, Button, Input, FormGroup, Table } from 'reactstrap';
+import { Container, Input, FormGroup, Table } from 'reactstrap';
 import { fetchBreeds } from '../api';
 import Navigation from '../components/Navbar';
+import CustomButton from '../components/CustomButton';
 
 function Main() {
   const [breeds, setBreeds] = useState([]);
@@ -36,9 +37,9 @@ function Main() {
             value={breedInput}
             onChange={handleInputChange}
           />
-          <Button color="primary" onClick={handleFetchBreed}>
+          <CustomButton color="primary" onClick={handleFetchBreed}>
             Search
-          </Button>
+          </CustomButton>
         </FormGroup>
         <Table>
           <thead>

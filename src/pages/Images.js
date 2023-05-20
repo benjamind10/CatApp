@@ -1,9 +1,11 @@
 // InfoPage.js
 import React, { useEffect, useState } from 'react';
-import { Container, Input, FormGroup } from 'reactstrap';
-import { fetchBreeds, fetchBreedImages } from '../api';
+import { Container, Input, FormGroup, Row, Col } from 'reactstrap';
+import { fetchBreeds, fetchBreedImages, fetchRandomImages } from '../api';
 import Navigation from '../components/Navbar';
 import CustomButton from '../components/CustomButton';
+
+import '../css/Image.css';
 
 function Images() {
   const [breedInput, setBreedInput] = useState('');
@@ -40,6 +42,15 @@ function Images() {
     }
   };
 
+  const handleFetchRandomImages = async () => {
+    try {
+      const images = await fetchRandomImages(10); // get 10 random images
+      setSelectedBreedImages(images);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
       <Navigation />
@@ -52,9 +63,26 @@ function Images() {
             value={breedInput}
             onChange={handleInputChange}
           />
-          <CustomButton color="primary" onClick={handleFetchBreedImages}>
-            Search
-          </CustomButton>
+          <Row className="d-flex justify-content-around align-items-center button-row">
+            <Col xs={12} sm={5}>
+              <CustomButton
+                color="primary"
+                onClick={handleFetchBreedImages}
+                block
+              >
+                Search
+              </CustomButton>
+            </Col>
+            <Col xs={12} sm={5}>
+              <CustomButton
+                color="secondary"
+                onClick={handleFetchRandomImages}
+                block
+              >
+                Get 10 random images
+              </CustomButton>
+            </Col>
+          </Row>
         </FormGroup>
         {selectedBreedImages.map((image, index) => (
           <img

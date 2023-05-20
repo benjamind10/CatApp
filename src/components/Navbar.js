@@ -7,7 +7,7 @@ const Navigation = () => {
   return (
     <Navbar color="light" light expand="md">
       <NavbarBrand to="/" tag={RouterNavLink}>
-        Cat API
+        Liam's Cat Blog
       </NavbarBrand>
       <Nav className="mr-auto" navbar>
         <NavItem>
@@ -16,8 +16,13 @@ const Navigation = () => {
           </NavLink>
         </NavItem>
         <NavItem>
-          <NavLink to="/info" tag={RouterNavLink}>
-            Info
+          <NavLink to="/images" tag={RouterNavLink}>
+            Images
+          </NavLink>
+        </NavItem>
+        <NavItem>
+          <NavLink to="/blog" tag={RouterNavLink}>
+            Blog
           </NavLink>
         </NavItem>
       </Nav>

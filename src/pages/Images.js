@@ -4,6 +4,11 @@ import { fetchBreeds, fetchBreedImages, fetchRandomImages } from '../api';
 import Navigation from '../components/Navbar';
 import CustomButton from '../components/CustomButton';
 import Autosuggest from 'react-autosuggest';
+import {
+  getSuggestionValue,
+  getSuggestions,
+  renderSuggestion,
+} from '../helpers/Functions';
 
 import '../css/Image.css';
 
@@ -23,17 +28,6 @@ function Images() {
     loadAllBreeds();
   }, []);
 
-  const getSuggestions = value => {
-    const inputValue = value ? value.trim().toLowerCase() : '';
-    const inputLength = inputValue.length;
-
-    return inputLength === 0
-      ? []
-      : allBreeds.filter(breed =>
-          breed.name.toLowerCase().includes(inputValue)
-        );
-  };
-
   const onSuggestionsFetchRequested = ({ value }) => {
     setSuggestions(getSuggestions(value));
   };
@@ -42,9 +36,9 @@ function Images() {
     setSuggestions([]);
   };
 
-  const getSuggestionValue = suggestion => suggestion.name;
+  getSuggestionValue();
 
-  const renderSuggestion = suggestion => <div>{suggestion.name}</div>;
+  renderSuggestion();
 
   const handleInputChange = (event, { newValue }) => {
     setBreedInput(newValue || '');

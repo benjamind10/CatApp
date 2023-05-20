@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Container,
-  Input,
-  FormGroup,
-  Table,
-  Row,
-  Col,
-  Alert,
-} from 'reactstrap';
+import { Container, FormGroup, Table, Row, Col, Alert } from 'reactstrap';
 import { fetchBreeds, fetchRandomBreed } from '../api';
 import Navigation from '../components/Navbar';
 import CustomButton from '../components/CustomButton';
 import Autosuggest from 'react-autosuggest';
+import {
+  getSuggestionValue,
+  getSuggestions,
+  renderSuggestion,
+} from '../helpers/Functions';
 
 function Main() {
   const [breeds, setBreeds] = useState([]);
@@ -29,7 +26,6 @@ function Main() {
   }, []);
 
   const onSuggestionsFetchRequested = ({ value }) => {
-    
     setSuggestions(getSuggestions(value));
   };
 
@@ -37,25 +33,13 @@ function Main() {
     setSuggestions([]);
   };
 
-  const getSuggestions = value => {
-    const inputValue = value ? value.trim().toLowerCase() : '';
-    const inputLength = inputValue.length;
-  
-    return inputLength === 0
-      ? []
-      : allBreeds.filter(breed =>
-          breed.name.toLowerCase().includes(inputValue)
-        );
-  };
+  getSuggestionValue();
 
-  const getSuggestionValue = suggestion => suggestion.name;
-
-  const renderSuggestion = suggestion => <div>{suggestion.name}</div>;
+  renderSuggestion();
 
   const handleInputChange = (event, { newValue }) => {
     setBreedInput(newValue || '');
   };
-  
 
   const handleFetchBreed = async () => {
     try {
@@ -88,12 +72,10 @@ function Main() {
     value: breedInput,
     onChange: handleInputChange,
   };
-  
 
   const theme = {
     input: 'form-control mb-3',
   };
-  
 
   return (
     <>
@@ -101,7 +83,7 @@ function Main() {
       <Container>
         <h1 className="text-center my-3">Breed Information</h1>
         <FormGroup className="mb-3">
-        <Autosuggest
+          <Autosuggest
             suggestions={suggestions}
             onSuggestionsFetchRequested={onSuggestionsFetchRequested}
             onSuggestionsClearRequested={onSuggestionsClearRequested}
@@ -109,9 +91,18 @@ function Main() {
             renderSuggestion={renderSuggestion}
             inputProps={inputProps}
             theme={theme}
-            onSuggestionSelected={(event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
+            onSuggestionSelected={(
+              event,
+              {
+                suggestion,
+                suggestionValue,
+                suggestionIndex,
+                sectionIndex,
+                method,
+              }
+            ) => {
               event.preventDefault();
-          
+
               setBreedInput(suggestionValue);
             }}
           />

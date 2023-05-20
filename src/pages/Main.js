@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Container,
   Input,
@@ -11,19 +11,54 @@ import {
 import { fetchBreeds, fetchRandomBreed } from '../api';
 import Navigation from '../components/Navbar';
 import CustomButton from '../components/CustomButton';
+import Autosuggest from 'react-autosuggest';
 
 function Main() {
   const [breeds, setBreeds] = useState([]);
   const [breedInput, setBreedInput] = useState('');
   const [noBreedFound, setNoBreedFound] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [allBreeds, setAllBreeds] = useState([]);
 
-  const handleInputChange = event => {
-    setBreedInput(event.target.value);
+  useEffect(() => {
+    const loadBreeds = async () => {
+      const breedsData = await fetchBreeds();
+      setAllBreeds(breedsData);
+    };
+    loadBreeds();
+  }, []);
+
+  const onSuggestionsFetchRequested = ({ value }) => {
+    
+    setSuggestions(getSuggestions(value));
   };
+
+  const onSuggestionsClearRequested = () => {
+    setSuggestions([]);
+  };
+
+  const getSuggestions = value => {
+    const inputValue = value ? value.trim().toLowerCase() : '';
+    const inputLength = inputValue.length;
+  
+    return inputLength === 0
+      ? []
+      : allBreeds.filter(breed =>
+          breed.name.toLowerCase().includes(inputValue)
+        );
+  };
+
+  const getSuggestionValue = suggestion => suggestion.name;
+
+  const renderSuggestion = suggestion => <div>{suggestion.name}</div>;
+
+  const handleInputChange = (event, { newValue }) => {
+    setBreedInput(newValue || '');
+  };
+  
 
   const handleFetchBreed = async () => {
     try {
-      const allBreeds = await fetchBreeds();
       const breedData = allBreeds.find(
         breed => breed.name.toLowerCase() === breedInput.toLowerCase()
       );
@@ -48,17 +83,37 @@ function Main() {
     }
   };
 
+  const inputProps = {
+    placeholder: 'Enter breed...',
+    value: breedInput,
+    onChange: handleInputChange,
+  };
+  
+
+  const theme = {
+    input: 'form-control mb-3',
+  };
+  
+
   return (
     <>
       <Navigation />
       <Container>
         <h1 className="text-center my-3">Breed Information</h1>
         <FormGroup className="mb-3">
-          <Input
-            className="mb-3"
-            placeholder="Enter breed..."
-            value={breedInput}
-            onChange={handleInputChange}
+        <Autosuggest
+            suggestions={suggestions}
+            onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+            onSuggestionsClearRequested={onSuggestionsClearRequested}
+            getSuggestionValue={getSuggestionValue}
+            renderSuggestion={renderSuggestion}
+            inputProps={inputProps}
+            theme={theme}
+            onSuggestionSelected={(event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) => {
+              event.preventDefault();
+          
+              setBreedInput(suggestionValue);
+            }}
           />
           <Row className="justify-content-center">
             <Col xs="auto">

@@ -4,11 +4,6 @@ import { fetchBreeds, fetchRandomBreed } from '../api';
 import Navigation from '../components/Navbar';
 import CustomButton from '../components/CustomButton';
 import Autosuggest from 'react-autosuggest';
-import {
-  getSuggestionValue,
-  getSuggestions,
-  renderSuggestion,
-} from '../helpers/Functions';
 
 function Main() {
   const [breeds, setBreeds] = useState([]);
@@ -26,16 +21,24 @@ function Main() {
   }, []);
 
   const onSuggestionsFetchRequested = ({ value }) => {
-    setSuggestions(getSuggestions(value));
+    setSuggestions(getSuggestions(value, allBreeds));
   };
-
   const onSuggestionsClearRequested = () => {
     setSuggestions([]);
   };
 
-  getSuggestionValue();
+  const getSuggestions = (value, breeds) => {
+    const inputValue = value.trim().toLowerCase();
+    const inputLength = inputValue.length;
 
-  renderSuggestion();
+    return inputLength === 0
+      ? []
+      : breeds.filter(breed => breed.name.toLowerCase().includes(inputValue));
+  };
+
+  const getSuggestionValue = suggestion => suggestion.name;
+
+  const renderSuggestion = suggestion => <div>{suggestion.name}</div>;
 
   const handleInputChange = (event, { newValue }) => {
     setBreedInput(newValue || '');

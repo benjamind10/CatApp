@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { Container, Input, FormGroup, Table, Row, Col } from 'reactstrap';
+import {
+  Container,
+  Input,
+  FormGroup,
+  Table,
+  Row,
+  Col,
+  Alert,
+} from 'reactstrap';
 import { fetchBreeds, fetchRandomBreed } from '../api';
 import Navigation from '../components/Navbar';
 import CustomButton from '../components/CustomButton';
@@ -7,6 +15,7 @@ import CustomButton from '../components/CustomButton';
 function Main() {
   const [breeds, setBreeds] = useState([]);
   const [breedInput, setBreedInput] = useState('');
+  const [noBreedFound, setNoBreedFound] = useState(false);
 
   const handleInputChange = event => {
     setBreedInput(event.target.value);
@@ -18,7 +27,12 @@ function Main() {
       const breedData = allBreeds.find(
         breed => breed.name.toLowerCase() === breedInput.toLowerCase()
       );
-      setBreeds([breedData]);
+      if (breedData) {
+        setNoBreedFound(false);
+        setBreeds([breedData]);
+      } else {
+        setNoBreedFound(true);
+      }
     } catch (error) {
       console.error(`Error: ${error}`);
     }
@@ -27,6 +41,7 @@ function Main() {
   const handleFetchRandomBreed = async () => {
     try {
       const randomBreed = await fetchRandomBreed();
+      setNoBreedFound(false);
       setBreeds([randomBreed]);
     } catch (error) {
       console.error(`Error: ${error}`);
@@ -57,6 +72,11 @@ function Main() {
               </CustomButton>
             </Col>
           </Row>
+          {noBreedFound && (
+            <Alert color="danger" className="mt-2">
+              No breed found
+            </Alert>
+          )}
         </FormGroup>
         <Table>
           <thead>

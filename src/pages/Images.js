@@ -1,6 +1,5 @@
-// InfoPage.js
 import React, { useEffect, useState } from 'react';
-import { Container, Input, FormGroup, Row, Col } from 'reactstrap';
+import { Container, Input, FormGroup, Row, Col, Alert } from 'reactstrap';
 import { fetchBreeds, fetchBreedImages, fetchRandomImages } from '../api';
 import Navigation from '../components/Navbar';
 import CustomButton from '../components/CustomButton';
@@ -11,6 +10,7 @@ function Images() {
   const [breedInput, setBreedInput] = useState('');
   const [allBreeds, setAllBreeds] = useState([]);
   const [selectedBreedImages, setSelectedBreedImages] = useState([]);
+  const [noBreedFound, setNoBreedFound] = useState(false);
 
   useEffect(() => {
     const loadAllBreeds = async () => {
@@ -29,13 +29,15 @@ function Images() {
     const breed = allBreeds.find(
       breed => breed.name.toLowerCase() === breedInput.toLowerCase()
     );
+
     if (!breed) {
-      console.error('Breed not found');
+      setNoBreedFound(true);
       return;
     }
 
     try {
       const images = await fetchBreedImages(breed.id);
+      setNoBreedFound(false);
       setSelectedBreedImages(images);
     } catch (error) {
       console.error(error);
@@ -45,6 +47,7 @@ function Images() {
   const handleFetchRandomImages = async () => {
     try {
       const images = await fetchRandomImages(10); // get 10 random images
+      setNoBreedFound(false);
       setSelectedBreedImages(images);
     } catch (error) {
       console.error(error);
@@ -75,6 +78,11 @@ function Images() {
               </CustomButton>
             </Col>
           </Row>
+          {noBreedFound && (
+            <Alert color="danger" className="mt-2">
+              No breed found
+            </Alert>
+          )}
         </FormGroup>
         {selectedBreedImages.map((image, index) => (
           <img

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Button,
   Form,
@@ -13,22 +13,20 @@ import {
   CardText,
 } from 'reactstrap';
 import Navigation from '../components/Navbar';
-import { UserContext } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 
 import '../css/UserDashboard.css';
 
 function UserDashboard() {
-  const { userId } = useContext(UserContext); // Get userId from UserContext
+  const serverIP = process.env.REACT_APP_API;
+  const userId = localStorage.getItem('userId');
   const [blogPosts, setBlogPosts] = useState([]);
   const [newPostTitle, setNewPostTitle] = useState('');
   const [newPostBody, setNewPostBody] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [editingPostId, setEditingPostId] = useState(null);
-  const serverIP = process.env.REACT_APP_API;
   const navigate = useNavigate();
 
-  // Fetch user's blog posts when component mounts
   useEffect(() => {
     if (!userId) {
       navigate('/');

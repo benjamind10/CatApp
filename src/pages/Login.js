@@ -1,15 +1,13 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Button, Form, FormGroup, Label, Input, Container } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 import Navigation from '../components/Navbar';
-import { UserContext } from '../context/UserContext';
 
 function LoginForm() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const { setUserId } = useContext(UserContext);
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -37,11 +35,15 @@ function LoginForm() {
         // Get the token from the response
         const token = data.token;
 
-        // Decode the token to get the user ID
+        // Decode the token to get the userId
         const decodedToken = jwt_decode(token);
         const userId = decodedToken.userId;
-        sessionStorage.setItem('userId', userId);
-        setUserId(userId);
+
+        // Store token, username, and userId in local storage
+        localStorage.setItem('token', token);
+        localStorage.setItem('username', username);
+        localStorage.setItem('userId', userId);
+
         navigate('/');
       }
     } catch (error) {

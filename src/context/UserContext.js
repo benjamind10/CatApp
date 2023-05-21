@@ -1,13 +1,27 @@
-import React, { createContext, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-export const UserContext = createContext({
-  userId: null,
-  setUserId: () => {},
-  logout: () => {},
-});
+const UserContext = React.createContext();
 
-export const UserProvider = ({ children }) => {
-  const [userId, setUserId] = useState(localStorage.getItem('userId') || null);
+function UserProvider({ children }) {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    console.log(token);
+
+    if (token) {
+      // replace this with the actual user data
+      const user = { _id: '123', username: 'John Doe' };
+      setUser(user);
+    }
+  }, []);
+
+  const login = token => {
+    localStorage.setItem('token', token);
+    // replace this with the actual user data
+    const user = { id: '123', name: 'John Doe' };
+    setUser(user);
+  };
 
   const logout = async () => {
     // Call to server logout endpoint
@@ -18,14 +32,15 @@ export const UserProvider = ({ children }) => {
       },
       credentials: 'include', // This will include the httpOnly cookie in the request
     });
-
-    setUserId(null);
-    localStorage.removeItem('userId');
+    localStorage.removeItem('token');
+    setUser(null);
   };
 
   return (
-    <UserContext.Provider value={{ userId, setUserId, logout }}>
+    <UserContext.Provider value={{ user, login, logout }}>
       {children}
     </UserContext.Provider>
   );
-};
+}
+
+export { UserProvider, UserContext };

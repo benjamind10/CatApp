@@ -16,6 +16,7 @@ function SignUpForm() {
 
     try {
       const serverIP = process.env.REACT_APP_API;
+
       const response = await fetch(`${serverIP}/user/register`, {
         method: 'POST',
         headers: {

@@ -28,7 +28,14 @@ router.post('/login', async (req, res) => {
     }
 
     // Generate a JWT token with the user ID as the payload
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
+    // Generate a JWT token with the user ID as the payload
+    const token = jwt.sign(
+      { userId: user._id, username: user.username },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: '7d',
+      }
+    );
 
     // Set the token as a cookie
     res.cookie('token', token, {

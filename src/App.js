@@ -9,6 +9,9 @@ import SignUpForm from './pages/SignUpForm';
 import UserDashboard from './pages/UserDashboard';
 import LoginForm from './pages/Login';
 import { UserProvider } from './context/UserContext';
+import BlogPosts from './pages/BlogPosts';
+
+import './css/style.css';
 
 function App() {
   return (
@@ -19,8 +22,9 @@ function App() {
           <Route path="images" element={<Images />} /> ""
           <Route path="/" element={<Main />} />
           <Route path="/images" component={Images} />
-          <Route path="/blog" Component={BlogPage} />
+          <Route path="/family" Component={BlogPage} />
           <Route path="/register" Component={SignUpForm} />
+          <Route path="/blog" Component={BlogPosts} />
           <Route path="/dashboard" Component={UserDashboard} />
           <Route path="/login" Component={LoginForm} />
         </Routes>{' '}

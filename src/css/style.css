@@ -1,0 +1,12 @@
+.navbar {
+  background-color: #f9a826; /* Change to the color you want */
+}
+
+.nav-link {
+  color: #000000 !important; /* Change to the color you want */
+}
+
+body {
+  background-color: #333; /* Dark grey */
+  color: #fff; /* White */
+}

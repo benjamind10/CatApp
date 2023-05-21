@@ -3,7 +3,7 @@ import { Button, Form, FormGroup, Label, Input, Container } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 import Navigation from '../components/Navbar';
-import UserContext from '../context/UserContext';
+import { UserContext } from '../context/UserContext';
 
 function LoginForm() {
   const [username, setUsername] = useState('');

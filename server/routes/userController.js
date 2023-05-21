@@ -85,3 +85,19 @@ router.patch('/:userId', async (req, res) => {
 });
 
 module.exports = router;
+
+// Logout user
+router.post('/logout', async (req, res) => {
+  try {
+    // Clear the token cookie
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Set to true in production
+      sameSite: 'none',
+    });
+
+    res.status(200).json({ message: 'User logged out successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});

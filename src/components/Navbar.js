@@ -1,10 +1,15 @@
 import React, { useContext } from 'react';
 import { NavLink as RouterNavLink } from 'react-router-dom';
 import { Navbar, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
-import UserContext from '../context/UserContext';
+import { UserContext } from '../context/UserContext';
 
 const Navigation = () => {
-  const { userId } = useContext(UserContext);
+  const { userId, logout } = useContext(UserContext);
+
+  const handleLogout = event => {
+    event.preventDefault();
+    logout();
+  };
 
   return (
     <Navbar color="light" light expand="md">
@@ -28,11 +33,18 @@ const Navigation = () => {
           </NavLink>
         </NavItem>
         {userId ? (
-          <NavItem>
-            <NavLink to="/dashboard" tag={RouterNavLink}>
-              Dashboard
-            </NavLink>
-          </NavItem>
+          <>
+            <NavItem>
+              <NavLink to="/dashboard" tag={RouterNavLink}>
+                Dashboard
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href="/" onClick={handleLogout}>
+                Logout
+              </NavLink>
+            </NavItem>
+          </>
         ) : (
           <NavItem>
             <NavLink to="/login" tag={RouterNavLink}>

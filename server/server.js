@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
-const blogPostsRoutes = require('./routes/blogPost');
+const blogPostController = require('./routes/blogPostController');
 const userController = require('./routes/userController');
 
 require('dotenv').config();
@@ -27,7 +27,7 @@ mongoose
 // Middlewares
 app.use(
   cors({
-    origin: 'http://localhost:3000', // replace with the URL of your front-end app
+    origin: 'http://localhost:3000', // replace with the URL of front-end app
     credentials: true,
   })
 );
@@ -42,7 +42,7 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.use('/api/posts', blogPostsRoutes);
+app.use('/api/posts', blogPostController);
 app.use('/api/user', userController);
 
 app.listen(port, () => {

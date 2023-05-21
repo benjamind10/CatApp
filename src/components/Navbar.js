@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { NavLink as RouterNavLink } from 'react-router-dom';
 import { Navbar, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
+import UserContext from '../context/UserContext';
 
-const Navigation = ({ isLoggedIn }) => {
+const Navigation = () => {
+  const { userId } = useContext(UserContext);
+
   return (
     <Navbar color="light" light expand="md">
       <NavbarBrand to="/" tag={RouterNavLink}>
@@ -24,7 +27,7 @@ const Navigation = ({ isLoggedIn }) => {
             Blog
           </NavLink>
         </NavItem>
-        {isLoggedIn ? (
+        {userId ? (
           <NavItem>
             <NavLink to="/dashboard" tag={RouterNavLink}>
               Dashboard

@@ -14,22 +14,25 @@ import {
 } from 'reactstrap';
 import Navigation from '../components/Navbar';
 import { UserContext } from '../context/UserContext';
+import { useNavigate } from 'react-router-dom';
 
 import '../css/UserDashboard.css';
 
 function UserDashboard() {
   const { userId } = useContext(UserContext); // Get userId from UserContext
-  console.log(userId);
-
   const [blogPosts, setBlogPosts] = useState([]);
   const [newPostTitle, setNewPostTitle] = useState('');
   const [newPostBody, setNewPostBody] = useState('');
   const serverIP = process.env.REACT_APP_API;
+  const navigate = useNavigate();
 
   // Fetch user's blog posts when component mounts
   useEffect(() => {
+    if (!userId) {
+      navigate('/');
+    }
     fetchUserBlogPosts();
-  }, []);
+  }, [userId, navigate]);
 
   const fetchUserBlogPosts = async () => {
     try {

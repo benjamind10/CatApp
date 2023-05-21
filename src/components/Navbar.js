@@ -1,14 +1,16 @@
 import React, { useContext } from 'react';
-import { NavLink as RouterNavLink } from 'react-router-dom';
+import { NavLink as RouterNavLink, useNavigate } from 'react-router-dom';
 import { Navbar, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
 import { UserContext } from '../context/UserContext';
 
 const Navigation = () => {
   const { userId, logout } = useContext(UserContext);
+  const navigate = useNavigate();
 
   const handleLogout = event => {
     event.preventDefault();
     logout();
+    navigate('/');
   };
 
   return (

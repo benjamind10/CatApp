@@ -1,35 +1,47 @@
 import React, { useState } from 'react';
 import { Button, Form, FormGroup, Label, Input, Container } from 'reactstrap';
-import Navigation from '../components/Navbar';
 import { useNavigate } from 'react-router-dom';
+import jwt_decode from 'jwt-decode';
+import Navigation from '../components/Navbar';
 
-function SignUpForm() {
-  const navigate = useNavigate();
+function LoginForm() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async e => {
     e.preventDefault();
 
-    const data = { username, password, email };
+    const data = { username, password };
 
     try {
       const serverIP = process.env.REACT_APP_API;
-      const response = await fetch(`${serverIP}/user/register`, {
+
+      const response = await fetch(`${serverIP}/user/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          credentials: 'include',
         },
         body: JSON.stringify(data),
       });
-      console.log(data);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       } else {
-        // You can perform actions on successful user creation here.
-        console.log('User successfully created');
+        // Login successful, redirect to home page
+        const data = await response.json();
+
+        // Get the token from the response
+        const token = data.token;
+
+        // Decode the token to get the user ID
+        const decodedToken = jwt_decode(token);
+        const userId = decodedToken.userId;
+        sessionStorage.setItem('userId', userId);
+
+        console.log('User ID: ', userId);
+
         navigate('/');
       }
     } catch (error) {
@@ -41,7 +53,7 @@ function SignUpForm() {
     <>
       <Navigation />
       <Container>
-        <h2>Sign Up</h2>
+        <h2>Login</h2>
         <Form onSubmit={handleSubmit}>
           <FormGroup>
             <Label for="username">Username</Label>
@@ -52,7 +64,6 @@ function SignUpForm() {
               placeholder="Enter your username"
               value={username}
               onChange={e => setUsername(e.target.value)}
-              required
             />
           </FormGroup>
           <FormGroup>
@@ -64,26 +75,13 @@ function SignUpForm() {
               placeholder="Enter your password"
               value={password}
               onChange={e => setPassword(e.target.value)}
-              required
             />
           </FormGroup>
-          <FormGroup>
-            <Label for="email">Email</Label>
-            <Input
-              type="text"
-              name="email"
-              id="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
-            />
-          </FormGroup>
-          <Button type="submit">Sign Up</Button>
+          <Button type="submit">Log In</Button>
         </Form>
       </Container>
     </>
   );
 }
 
-export default SignUpForm;
+export default LoginForm;

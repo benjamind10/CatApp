@@ -1,8 +1,8 @@
-// User controller
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
+const jwt = require('jsonwebtoken');
 
 // Get all users
 router.get('/', async (req, res) => {
@@ -14,21 +14,44 @@ router.get('/', async (req, res) => {
   }
 });
 
+// User login
+router.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    // Find the user by username
+    const user = await User.findOne({ username });
+
+    // If user not found or password doesn't match, return an error
+    if (!user || !(await user.comparePassword(password))) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    // Generate a JWT token with the user ID as the payload
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
+
+    // Set the token as a cookie
+    res.cookie('token', token, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      secure: process.env.NODE_ENV === 'production', // Set to true in production
+      sameSite: 'none',
+    });
+
+    // Return a success response
+    res.json({ message: 'Login successful', token: token });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // Add new user
 router.post('/register', async (req, res) => {
-  console.log(req.body); // Debug statement
-
-  const salt = await bcrypt.genSalt(10);
-  console.log(salt); // Debug statement
-
-  const hashedPassword = await bcrypt.hash(req.body.password, salt);
-
   const user = new User({
     username: req.body.username,
-    password: hashedPassword,
+    password: req.body.password, // We're not hashing the password here.
     email: req.body.email,
   });
-  console.log(user);
 
   try {
     const savedUser = await user.save();

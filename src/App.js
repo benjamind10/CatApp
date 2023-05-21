@@ -6,6 +6,9 @@ import Images from './pages/Images';
 import BlogPage from './pages/BlogPage';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import SignUpForm from './pages/SignUpForm';
+import UserDashboard from './pages/UserDashboard';
+import LoginForm from './pages/Login';
 
 function App() {
   return (
@@ -16,6 +19,9 @@ function App() {
         <Route path="/" element={<Main />} />
         <Route path="/images" component={Images} />
         <Route path="/blog" Component={BlogPage} />
+        <Route path="/register" Component={SignUpForm} />
+        <Route path="/dashboard" Component={UserDashboard} />
+        <Route path="/login" Component={LoginForm} />
       </Routes>{' '}
     </Router>
   );

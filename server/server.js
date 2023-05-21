@@ -1,15 +1,18 @@
 // server.js
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
-const blogPostsRoutes = require('./routes/blogPosts');
+const blogPostsRoutes = require('./routes/blogPost');
+const userController = require('./routes/userController');
+
+require('dotenv').config();
 
 const app = express();
-const port = 5000;
+const port = 5001;
 
 // Replace with your MongoDB connection string
-const uri =
-  'mongodb+srv://<username>:<password>@cluster0.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
+const uri = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@cluster0.ex3xzni.mongodb.net/${process.env.MONGO_DB_NAME}`;
 
 // Connect to MongoDB
 mongoose
@@ -22,11 +25,25 @@ mongoose
   });
 
 // Middlewares
-app.use(cors());
+app.use(
+  cors({
+    origin: 'http://localhost:3000', // replace with the URL of your front-end app
+    credentials: true,
+  })
+);
 app.use(express.json());
+app.use(cookieParser());
+app.use((req, res, next) => {
+  req.rawBody = '';
+  req.on('data', function (chunk) {
+    req.rawBody += chunk;
+  });
+  next();
+});
 
 // Routes
-app.use('/api/blogPosts', blogPostsRoutes);
+app.use('/api/posts', blogPostsRoutes);
+app.use('/api/user', userController);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

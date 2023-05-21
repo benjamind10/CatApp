@@ -23,6 +23,8 @@ function UserDashboard() {
   const [blogPosts, setBlogPosts] = useState([]);
   const [newPostTitle, setNewPostTitle] = useState('');
   const [newPostBody, setNewPostBody] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingPostId, setEditingPostId] = useState(null);
   const serverIP = process.env.REACT_APP_API;
   const navigate = useNavigate();
 
@@ -47,6 +49,7 @@ function UserDashboard() {
         throw new Error(`HTTP error! status: ${response.status}`);
       } else {
         const data = await response.json();
+        console.log(data);
         setBlogPosts(data);
       }
     } catch (error) {
@@ -58,10 +61,20 @@ function UserDashboard() {
     e.preventDefault();
 
     const data = { title: newPostTitle, body: newPostBody };
+    let endpoint;
+    let method;
+
+    if (isEditing) {
+      endpoint = `${serverIP}/posts/edit/${editingPostId}/user/${userId}`;
+      method = 'PUT';
+    } else {
+      endpoint = `${serverIP}/posts/user/${userId}/create`;
+      method = 'POST';
+    }
 
     try {
-      const response = await fetch(`${serverIP}/posts/user/${userId}/create`, {
-        method: 'POST',
+      const response = await fetch(endpoint, {
+        method: method,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -79,6 +92,13 @@ function UserDashboard() {
     }
   };
 
+  const startEditPost = (postId, title, body) => {
+    setIsEditing(true);
+    setEditingPostId(postId);
+    setNewPostTitle(title);
+    setNewPostBody(body);
+  };
+
   return (
     <>
       <Navigation />
@@ -90,9 +110,14 @@ function UserDashboard() {
               <Card body key={index}>
                 <CardTitle tag="h5">{post.title}</CardTitle>
                 <CardText>{post.body}</CardText>
-                {/* Here is where you can add buttons or any quick access controls for each post */}
                 <div className="center-buttons">
-                  <Button className="button-padding" color="primary">
+                  <Button
+                    className="button-padding"
+                    color="primary"
+                    onClick={() =>
+                      startEditPost(post._id, post.title, post.body)
+                    }
+                  >
                     Edit
                   </Button>
                   <Button className="button-padding" color="danger">
@@ -102,7 +127,7 @@ function UserDashboard() {
               </Card>
             ))}
 
-            <h2>Add a New Blog Post</h2>
+            <h2>{isEditing ? 'Edit Post' : 'Add a New Blog Post'}</h2>
             <Form onSubmit={handleNewPost}>
               <FormGroup>
                 <Label for="postTitle">Title</Label>

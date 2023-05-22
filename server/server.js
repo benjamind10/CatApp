@@ -44,17 +44,19 @@ app.use((req, res, next) => {
   });
   next();
 });
+if (process.env.NODE_ENV === 'production') {
+  app.use('/images', express.static(path.join(__dirname, '../client/images')));
+}
 
-// app.use('/images', express.static(path.join(__dirname, '../client/images')));
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../client/build')));
+}
 
-// if (process.env.NODE_ENV === 'production') {
-//   app.use(express.static(path.join(__dirname, '../client/build')));
-// }
-
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, '../client/build/index.html'));
-// });
-
+if (process.env.NODE_ENV === 'production') {
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+  });
+}
 // Routes
 app.use('/api/posts', blogPostController);
 app.use('/api/user', userController);

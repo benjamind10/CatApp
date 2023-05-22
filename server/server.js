@@ -31,6 +31,7 @@ app.use(
       process.env.NODE_ENV === 'production'
         ? 'https://radiant-cove-09592.herokuapp.com/'
         : 'http://localhost:3000',
+    // origin: 'http://localhost:3000',
     credentials: true,
   })
 );
@@ -44,15 +45,15 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/images', express.static(path.join(__dirname, '../client/images')));
+// app.use('/images', express.static(path.join(__dirname, '../client/images')));
 
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/build')));
-}
+// if (process.env.NODE_ENV === 'production') {
+//   app.use(express.static(path.join(__dirname, '../client/build')));
+// }
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/build/index.html'));
-});
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../client/build/index.html'));
+// });
 
 // Routes
 app.use('/api/posts', blogPostController);

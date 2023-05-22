@@ -19,7 +19,10 @@ import Navigation from '../components/Navbar';
 import '../css/UserDashboard.css';
 
 function UserDashboard() {
-  const serverIP = process.env.REACT_APP_API;
+  const serverIP =
+    process.env.NODE_ENV === 'production'
+      ? process.env.REACT_APP_HEROKU_API
+      : process.env.REACT_APP_API;
   const navigate = useNavigate();
 
   const userId = localStorage.getItem('userId');
@@ -49,6 +52,7 @@ function UserDashboard() {
         throw new Error(`HTTP error! status: ${response.status}`);
       } else {
         const data = await response.json();
+
         setBlogPosts(data);
       }
     } catch (error) {

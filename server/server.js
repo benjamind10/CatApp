@@ -1,10 +1,10 @@
-// server.js
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const blogPostController = require('./routes/blogPostController');
 const userController = require('./routes/userController');
+const path = require('path');
 
 require('dotenv').config();
 
@@ -44,14 +44,14 @@ app.use((req, res, next) => {
   next();
 });
 
-// Accessing the path module
-const path = require('path');
+app.use('/images', express.static(path.join(__dirname, '../client/images')));
 
-// Step 1:
-app.use(express.static(path.resolve(__dirname, './client/build')));
-// Step 2:
-app.get('*', function (request, response) {
-  response.sendFile(path.resolve(__dirname, './client/build', 'index.html'));
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../client/build')));
+}
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 
 // Routes

@@ -27,7 +27,8 @@ mongoose
 // Middlewares
 app.use(
   cors({
-    origin: 'http://localhost:3000', // replace with the URL of front-end app
+    origin: 'https://radiant-cove-09592.herokuapp.com/',
+    // origin: 'http://localhost:3000',
     credentials: true,
   })
 );
@@ -45,6 +46,6 @@ app.use((req, res, next) => {
 app.use('/api/posts', blogPostController);
 app.use('/api/user', userController);
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });

@@ -27,8 +27,10 @@ mongoose
 // Middlewares
 app.use(
   cors({
-    // origin: 'https://radiant-cove-09592.herokuapp.com/',
-    origin: 'http://localhost:3000',
+    origin:
+      process.env.NODE_ENV === 'production'
+        ? 'https://radiant-cove-09592.herokuapp.com/'
+        : 'http://localhost:3000',
     credentials: true,
   })
 );

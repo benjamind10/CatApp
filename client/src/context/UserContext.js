@@ -8,6 +8,8 @@ function UserProvider({ children }) {
 
   const setUserFromToken = token => {
     const decodedToken = jwt_decode(token);
+    localStorage.setItem('userId', decodedToken.userId);
+    localStorage.setItem('username', decodedToken.username);
     const user = {
       _id: decodedToken.userId,
       username: decodedToken.username,
@@ -38,6 +40,8 @@ function UserProvider({ children }) {
       credentials: 'include', // This will include the httpOnly cookie in the request
     });
     localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    localStorage.removeItem('userId');
     setUser(null);
   };
 

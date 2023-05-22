@@ -18,7 +18,6 @@ function LoginForm() {
 
     try {
       const serverIP = process.env.REACT_APP_API;
-      console.log(serverIP);
 
       const response = await fetch(`${serverIP}/user/login`, {
         method: 'POST',

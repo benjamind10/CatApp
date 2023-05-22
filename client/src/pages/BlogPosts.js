@@ -8,9 +8,12 @@ import {
   FormGroup,
   Input,
   Form,
+  Row,
+  Col,
 } from 'reactstrap';
 
 import Navigation from '../components/Navbar';
+import Sidebar from '../components/Sidebar';
 
 const serverIP =
   process.env.NODE_ENV === 'production'
@@ -63,54 +66,64 @@ function BlogPosts() {
     <>
       <Navigation />
       <Container>
-        <h1>All Blog Posts</h1>
-        {posts.map((post, index) => (
-          <Card body key={index}>
-            <CardTitle tag="h5">{post.title}</CardTitle>
-            <CardText>{post.body}</CardText>
-            <CardText className="text-muted font-italic small">
-              {post.user.username}
-            </CardText>
-            <div className="d-flex justify-content-center my-3">
-              <Button
-                color="primary"
-                className="me-3"
-                onClick={() => handleLike(post.id)}
-              >
-                Like
-              </Button>
-              <Button color="secondary" onClick={() => handleDislike(post._id)}>
-                Dislike
-              </Button>
-            </div>
-            <Form
-              onSubmit={e => {
-                e.preventDefault();
-                handleAddComment(post._id, e.target.comment.value);
-              }}
-            >
-              <FormGroup>
-                <Input
-                  type="text"
-                  name="comment"
-                  id="comment"
-                  placeholder="Add a comment"
-                />
-              </FormGroup>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  marginTop: '1rem',
-                }}
-              >
-                <div className="d-flex justify-content-center">
-                  <Button type="submit">Add Comment</Button>
+        <Row>
+          <Col md="8">
+            <h1>All Blog Posts</h1>
+            {posts.map((post, index) => (
+              <Card className="mb-3" body key={index}>
+                <CardTitle tag="h5">{post.title}</CardTitle>
+                <CardText>{post.body}</CardText>
+                <CardText className="text-muted font-italic small">
+                  {post.user.username}
+                </CardText>
+                <div className="d-flex justify-content-center my-3">
+                  <Button
+                    color="primary"
+                    className="me-3"
+                    onClick={() => handleLike(post.id)}
+                  >
+                    Like
+                  </Button>
+                  <Button
+                    color="secondary"
+                    onClick={() => handleDislike(post._id)}
+                  >
+                    Dislike
+                  </Button>
                 </div>
-              </div>
-            </Form>
-          </Card>
-        ))}
+                <Form
+                  onSubmit={e => {
+                    e.preventDefault();
+                    handleAddComment(post._id, e.target.comment.value);
+                  }}
+                >
+                  <FormGroup>
+                    <Input
+                      type="text"
+                      name="comment"
+                      id="comment"
+                      placeholder="Add a comment"
+                    />
+                  </FormGroup>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      marginTop: '1rem',
+                    }}
+                  >
+                    <div className="d-flex justify-content-center">
+                      <Button type="submit">Add Comment</Button>
+                    </div>
+                  </div>
+                </Form>
+              </Card>
+            ))}
+          </Col>
+          <Col md="4">
+            <Sidebar />
+          </Col>
+        </Row>
       </Container>
     </>
   );

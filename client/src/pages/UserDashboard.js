@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import Navigation from '../components/Navbar';
 
 import '../css/UserDashboard.css';
+import Sidebar from '../components/Sidebar';
 
 function UserDashboard() {
   const serverIP =
@@ -110,7 +111,7 @@ function UserDashboard() {
           <Col md="8">
             <h2>Your Blog Posts</h2>
             {blogPosts.map((post, index) => (
-              <Card body key={index}>
+              <Card className="mb-3" body key={index}>
                 <CardTitle tag="h5">{post.title}</CardTitle>
                 <CardText>{post.body}</CardText>
                 <div className="center-buttons">
@@ -129,7 +130,6 @@ function UserDashboard() {
                 </div>
               </Card>
             ))}
-
             <h2>{isEditing ? 'Edit Post' : 'Add a New Blog Post'}</h2>
             <Form onSubmit={handleNewPost}>
               <FormGroup>
@@ -161,15 +161,7 @@ function UserDashboard() {
           </Col>
           <Col md="4">
             {/* This is a column for quick access buttons or controls */}
-            <h2>Quick Actions</h2>
-            <div className="center-buttons">
-              <Button className="button-padding" color="primary" block>
-                New Post
-              </Button>
-              <Button className="button-padding" color="info" block>
-                Manage Posts
-              </Button>
-            </div>
+            <Sidebar />
           </Col>
         </Row>
       </Container>

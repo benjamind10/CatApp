@@ -12,7 +12,10 @@ import {
 
 import Navigation from '../components/Navbar';
 
-const serverIP = process.env.REACT_APP_API;
+const serverIP =
+  process.env.NODE_ENV === 'production'
+    ? process.env.REACT_APP_HEROKU_API
+    : process.env.REACT_APP_API;
 
 function BlogPosts() {
   const [posts, setPosts] = useState([]);

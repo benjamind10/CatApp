@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Container, FormGroup, Table, Row, Col, Alert } from 'reactstrap';
+import Autosuggest from 'react-autosuggest';
+
 import { fetchBreeds, fetchRandomBreed } from '../api';
 import Navigation from '../components/Navbar';
 import CustomButton from '../components/CustomButton';
-import Autosuggest from 'react-autosuggest';
 
 function Main() {
   const [breeds, setBreeds] = useState([]);

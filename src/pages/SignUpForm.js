@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Button, Form, FormGroup, Label, Input, Container } from 'reactstrap';
-import Navigation from '../components/Navbar';
 import { useNavigate } from 'react-router-dom';
+
+import Navigation from '../components/Navbar';
 
 function SignUpForm() {
   const navigate = useNavigate();

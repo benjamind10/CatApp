@@ -1,12 +1,10 @@
-.navbar {
-  background-color: #f9a826; /* Change to the color you want */
-}
-
-.nav-link {
-  color: #000000 !important; /* Change to the color you want */
-}
+/* body {
+  background-image: url('/src//assets/background.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+} */
 
 body {
-  background-color: #333; /* Dark grey */
-  color: #fff; /* White */
+  background-color: #eae8ff;
 }

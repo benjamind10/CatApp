@@ -9,7 +9,7 @@ const userController = require('./routes/userController');
 require('dotenv').config();
 
 const app = express();
-const port = 5001;
+const PORT = process.env.PORT || 5001;
 
 // Replace with your MongoDB connection string
 const uri = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@cluster0.ex3xzni.mongodb.net/${process.env.MONGO_DB_NAME}`;

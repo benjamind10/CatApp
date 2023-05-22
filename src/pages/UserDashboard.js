@@ -12,20 +12,22 @@ import {
   CardTitle,
   CardText,
 } from 'reactstrap';
-import Navigation from '../components/Navbar';
 import { useNavigate } from 'react-router-dom';
+
+import Navigation from '../components/Navbar';
 
 import '../css/UserDashboard.css';
 
 function UserDashboard() {
   const serverIP = process.env.REACT_APP_API;
+  const navigate = useNavigate();
+
   const userId = localStorage.getItem('userId');
   const [blogPosts, setBlogPosts] = useState([]);
   const [newPostTitle, setNewPostTitle] = useState('');
   const [newPostBody, setNewPostBody] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [editingPostId, setEditingPostId] = useState(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (!userId) {
@@ -47,7 +49,6 @@ function UserDashboard() {
         throw new Error(`HTTP error! status: ${response.status}`);
       } else {
         const data = await response.json();
-        console.log(data);
         setBlogPosts(data);
       }
     } catch (error) {

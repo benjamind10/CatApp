@@ -9,7 +9,9 @@ import {
   Input,
   Form,
 } from 'reactstrap';
+
 import Navigation from '../components/Navbar';
+
 const serverIP = process.env.REACT_APP_API;
 
 function BlogPosts() {

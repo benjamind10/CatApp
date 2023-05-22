@@ -1,26 +1,31 @@
 import React, { useEffect, useState } from 'react';
+import jwt_decode from 'jwt-decode';
 
 const UserContext = React.createContext();
 
 function UserProvider({ children }) {
   const [user, setUser] = useState(null);
 
+  const setUserFromToken = token => {
+    const decodedToken = jwt_decode(token);
+    const user = {
+      _id: decodedToken.userId,
+      username: decodedToken.username,
+    };
+    setUser(user);
+  };
+
   useEffect(() => {
     const token = localStorage.getItem('token');
-    console.log(token);
 
     if (token) {
-      // replace this with the actual user data
-      const user = { _id: '123', username: 'John Doe' };
-      setUser(user);
+      setUserFromToken(token);
     }
   }, []);
 
   const login = token => {
     localStorage.setItem('token', token);
-    // replace this with the actual user data
-    const user = { id: '123', name: 'John Doe' };
-    setUser(user);
+    setUserFromToken(token);
   };
 
   const logout = async () => {

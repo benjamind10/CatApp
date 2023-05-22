@@ -1,14 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Updated here
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 import Main from './pages/Main';
 import Images from './pages/Images';
 import BlogPage from './pages/BlogPage';
-
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { UserProvider } from './context/UserContext';
 import SignUpForm from './pages/SignUpForm';
 import UserDashboard from './pages/UserDashboard';
 import LoginForm from './pages/Login';
-import { UserProvider } from './context/UserContext';
 import BlogPosts from './pages/BlogPosts';
 
 import './css/style.css';

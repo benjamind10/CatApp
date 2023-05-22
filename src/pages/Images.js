@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Container, FormGroup, Row, Col, Alert } from 'reactstrap';
+import Autosuggest from 'react-autosuggest';
+
 import { fetchBreeds, fetchBreedImages, fetchRandomImages } from '../api';
 import Navigation from '../components/Navbar';
 import CustomButton from '../components/CustomButton';
-import Autosuggest from 'react-autosuggest';
 
 import '../css/Image.css';
 

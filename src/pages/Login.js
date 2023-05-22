@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Button, Form, FormGroup, Label, Input, Container } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
-import jwt_decode from 'jwt-decode';
+
 import Navigation from '../components/Navbar';
+import { UserContext } from '../context/UserContext';
 
 function LoginForm() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const { login } = useContext(UserContext);
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -35,16 +37,15 @@ function LoginForm() {
         // Get the token from the response
         const token = data.token;
 
-        // Decode the token to get the userId
-        const decodedToken = jwt_decode(token);
-        const userId = decodedToken.userId;
+        if (token) {
+          login(token);
+          // Navigate to the home page or dashboard
+        } else {
+          // Show error message
+          console.log('Error with token!');
+        }
 
-        // Store token, username, and userId in local storage
-        localStorage.setItem('token', token);
-        localStorage.setItem('username', username);
-        localStorage.setItem('userId', userId);
-
-        navigate('/');
+        navigate('/dashboard');
       }
     } catch (error) {
       console.error('Error:', error);

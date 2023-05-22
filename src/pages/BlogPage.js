@@ -1,4 +1,3 @@
-// BlogPage.js
 import React from 'react';
 import {
   Container,
@@ -9,8 +8,8 @@ import {
   CardSubtitle,
   CardText,
 } from 'reactstrap';
-import Navigation from '../components/Navbar';
 
+import Navigation from '../components/Navbar';
 import lunaImage from '../assets/luna.JPG';
 import obiImage from '../assets/obi.jpeg';
 

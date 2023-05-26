@@ -1,0 +1,11 @@
+.button-padding {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.center-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}

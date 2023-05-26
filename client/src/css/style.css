@@ -1,0 +1,10 @@
+/* body {
+  background-image: url('/src//assets/background.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+} */
+
+body {
+  background-color: #eae8ff;
+}

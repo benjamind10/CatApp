@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const blogPostController = require('./routes/blogPostController');
 const userController = require('./routes/userController');
 const path = require('path');
+const multer = require('multer');
 
 require('dotenv').config();
 
@@ -23,6 +24,31 @@ mongoose
   .catch(err => {
     console.log(err);
   });
+
+// Configure multer for image uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
+
+app.post('/upload', upload.single('image'), async (req, res) => {
+  try {
+    const dest = path.join(__dirname, '../client/images', req.file.filename);
+    await fs.move(req.file.path, dest);
+    return res.status(201).json({
+      message: 'File uploaded successfully',
+      filename: req.file.filename,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+});
 
 // Middlewares
 app.use(

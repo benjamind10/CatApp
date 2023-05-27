@@ -145,7 +145,16 @@ function BlogPosts() {
                 <CardText className="text-muted font-italic small">
                   {post.user.username}
                 </CardText>
-                {post.image && <img src={post.image} alt={post.title} />}
+                {post.picture && (
+                  <img
+                    src={
+                      process.env.NODE_ENV === 'production'
+                        ? `${process.env.REACT_APP_API_URL}/production/path/${post.picture}`
+                        : `/images/${post.picture}`
+                    }
+                    alt={post.title}
+                  />
+                )}
                 <div className="d-flex justify-content-center my-3">
                   <Button
                     color="primary"
@@ -177,21 +186,6 @@ function BlogPosts() {
                       onChange={handleCommentChange}
                     />
                   </FormGroup>
-                  {/* <FormGroup>
-                    <Input
-                      type="file"
-                      name="image"
-                      id="image"
-                      className="mb-3"
-                      onChange={handleImageChange}
-                    />
-                    <Button
-                      color="info"
-                      onClick={() => handleAddImage(post._id)}
-                    >
-                      Upload Image
-                    </Button>
-                  </FormGroup> */}
                   <div
                     style={{
                       display: 'flex',

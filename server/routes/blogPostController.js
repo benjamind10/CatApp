@@ -1,6 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const Post = require('../models/post');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs-extra');
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 // Get all posts
 router.get('/', async (req, res) => {
@@ -27,22 +41,36 @@ router.get('/user/:userId', async (req, res) => {
 });
 
 // Create a new post
-router.post('/user/:userId/create', async (req, res) => {
-  const userId = req.params.userId; // Get userId from the path
+router.post(
+  '/user/:userId/create',
+  upload.single('image'),
+  async (req, res) => {
+    const userId = req.params.userId; // Get userId from the path
 
-  const post = new Post({
-    user: userId, // Now user is assigned from the path
-    title: req.body.title,
-    body: req.body.body,
-  });
+    const post = new Post({
+      user: userId, // Now user is assigned from the path
+      title: req.body.title,
+      body: req.body.body,
+      picture: `/images/${req.file.filename}`, // Include the path to the uploaded image
+    });
 
-  try {
-    const savedPost = await post.save();
-    res.json(savedPost);
-  } catch (err) {
-    res.json({ message: err });
+    try {
+      // Move the file
+      const dest = path.join(
+        __dirname,
+        '../../client/images',
+        req.file.filename
+      );
+      await fs.move(req.file.path, dest);
+
+      const savedPost = await post.save();
+      res.json(savedPost);
+    } catch (err) {
+      res.json({ message: err });
+      console.log(err);
+    }
   }
-});
+);
 
 // Edit a post
 router.put('/edit/:postId/user/:userId', async (req, res) => {

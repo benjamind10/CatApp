@@ -120,6 +120,7 @@ function UserDashboard() {
               <Card className="mb-3" body key={index}>
                 <CardTitle tag="h5">{post.title}</CardTitle>
                 <CardText>{post.body}</CardText>
+                <img src={`${serverIP}${post.picture}`} alt="post" />
                 <div className="center-buttons">
                   <Button
                     className="button-padding"

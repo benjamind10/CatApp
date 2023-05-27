@@ -32,6 +32,7 @@ function UserDashboard() {
   const [newPostBody, setNewPostBody] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [editingPostId, setEditingPostId] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     if (!userId) {
@@ -61,10 +62,13 @@ function UserDashboard() {
     }
   };
 
+  const handleImageChange = e => {
+    setSelectedImage(e.target.files[0]);
+  };
+
   const handleNewPost = async e => {
     e.preventDefault();
 
-    const data = { title: newPostTitle, body: newPostBody };
     let endpoint;
     let method;
 
@@ -76,13 +80,15 @@ function UserDashboard() {
       method = 'POST';
     }
 
+    const formData = new FormData();
+    formData.append('title', newPostTitle);
+    formData.append('body', newPostBody);
+    formData.append('image', selectedImage);
+
     try {
       const response = await fetch(endpoint, {
         method: method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+        body: formData,
       });
 
       if (!response.ok) {
@@ -154,6 +160,15 @@ function UserDashboard() {
                   value={newPostBody}
                   onChange={e => setNewPostBody(e.target.value)}
                   required
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label for="postImage">Image</Label>
+                <Input
+                  type="file"
+                  name="postImage"
+                  id="postImage"
+                  onChange={handleImageChange}
                 />
               </FormGroup>
               <Button type="submit">Post</Button>

@@ -109,27 +109,27 @@ function BlogPosts() {
     }
   };
 
-  const handleAddImage = async postId => {
-    if (!selectedImage) {
-      return;
-    }
+  // const handleAddImage = async postId => {
+  //   if (!selectedImage) {
+  //     return;
+  //   }
 
-    const formData = new FormData();
-    formData.append('image', selectedImage);
+  //   const formData = new FormData();
+  //   formData.append('image', selectedImage);
 
-    try {
-      const response = await fetch(`${serverIP}/posts/${postId}/image`, {
-        method: 'POST',
-        body: formData,
-      });
+  //   try {
+  //     const response = await fetch(`${serverIP}/posts/${postId}/image`, {
+  //       method: 'POST',
+  //       body: formData,
+  //     });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! status: ${response.status}`);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error:', error);
+  //   }
+  // };
 
   return (
     <>
@@ -145,6 +145,7 @@ function BlogPosts() {
                 <CardText className="text-muted font-italic small">
                   {post.user.username}
                 </CardText>
+                {post.image && <img src={post.image} alt={post.title} />}
                 <div className="d-flex justify-content-center my-3">
                   <Button
                     color="primary"
@@ -176,7 +177,7 @@ function BlogPosts() {
                       onChange={handleCommentChange}
                     />
                   </FormGroup>
-                  <FormGroup>
+                  {/* <FormGroup>
                     <Input
                       type="file"
                       name="image"
@@ -190,7 +191,7 @@ function BlogPosts() {
                     >
                       Upload Image
                     </Button>
-                  </FormGroup>
+                  </FormGroup> */}
                   <div
                     style={{
                       display: 'flex',

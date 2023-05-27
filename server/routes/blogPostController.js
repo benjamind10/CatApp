@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const Post = require('../models/post');
-const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
 
 // Get all posts
 router.get('/', async (req, res) => {
@@ -106,20 +104,6 @@ router.post('/:postId/comment', async (req, res) => {
     );
 
     res.json({ message: 'Comment added' });
-  } catch (err) {
-    res.json({ message: err });
-  }
-});
-
-// Upload an image to a post
-router.post('/:postId/image', upload.single('image'), async (req, res) => {
-  try {
-    await Post.updateOne(
-      { _id: req.params.postId },
-      { $set: { picture: req.file.path } } // Set path to uploaded image
-    );
-
-    res.json({ message: 'Image uploaded' });
   } catch (err) {
     res.json({ message: err });
   }

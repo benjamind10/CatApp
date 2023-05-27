@@ -46,23 +46,17 @@ router.post(
   upload.single('image'),
   async (req, res) => {
     const userId = req.params.userId; // Get userId from the path
-
     const post = new Post({
       user: userId, // Now user is assigned from the path
       title: req.body.title,
       body: req.body.body,
-      picture: `/images/${req.file.filename}`, // Include the path to the uploaded image
+      picture: {
+        data: fs.readFileSync(req.file.path),
+        contentType: req.file.mimetype,
+      },
     });
 
     try {
-      // Move the file
-      const dest = path.join(
-        __dirname,
-        '../../client/images',
-        req.file.filename
-      );
-      await fs.move(req.file.path, dest);
-
       const savedPost = await post.save();
       res.json(savedPost);
     } catch (err) {
@@ -73,17 +67,47 @@ router.post(
 );
 
 // Edit a post
-router.put('/edit/:postId/user/:userId', async (req, res) => {
-  try {
-    const updatedPost = await Post.updateOne(
-      { _id: req.params.postId, user: req.params.userId }, // Match by both postId and userId to ensure users can only edit their own posts
-      { $set: { title: req.body.title, body: req.body.body } }
-    );
-    res.json(updatedPost);
-  } catch (err) {
-    res.json({ message: err });
+router.put(
+  '/edit/:postId/user/:userId',
+  upload.single('image'),
+  async (req, res) => {
+    try {
+      const postId = req.params.postId;
+      const userId = req.params.userId;
+      const { title, body } = req.body;
+
+      const post = await Post.findOne({ _id: postId, user: userId });
+
+      if (!post) {
+        return res.status(404).json({ message: 'Post not found' });
+      }
+
+      let updatedFields = { title, body };
+
+      if (req.file) {
+        updatedFields.picture = {
+          data: fs.readFileSync(req.file.path),
+          contentType: req.file.mimetype,
+        };
+      }
+
+      const updatedPost = await Post.findOneAndUpdate(
+        { _id: postId, user: userId },
+        { $set: updatedFields },
+        { new: true }
+      );
+
+      if (!updatedPost) {
+        return res.status(404).json({ message: 'Post not found' });
+      }
+
+      res.json(updatedPost);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error' });
+    }
   }
-});
+);
 
 // Delete a post
 router.delete('/delete/:postId/user/:userId', async (req, res) => {
@@ -134,6 +158,24 @@ router.post('/:postId/comment', async (req, res) => {
     res.json({ message: 'Comment added' });
   } catch (err) {
     res.json({ message: err });
+  }
+});
+
+router.get('/images/:postId', async (req, res) => {
+  const postId = req.params.postId;
+
+  try {
+    const post = await Post.findById(postId);
+
+    if (!post || !post.picture) {
+      return res.status(404).json({ message: 'Image not found' });
+    }
+
+    res.set('Content-Type', post.picture.contentType);
+    res.send(post.picture.data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 

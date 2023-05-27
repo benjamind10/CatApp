@@ -74,6 +74,7 @@ app.use((req, res, next) => {
 // Routes
 app.use('/api/posts', blogPostController);
 app.use('/api/user', userController);
+app.use('/uploads', express.static('uploads/'));
 
 if (process.env.NODE_ENV === 'production') {
   app.use('/images', express.static(path.join(__dirname, '../client/images')));

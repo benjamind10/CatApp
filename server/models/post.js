@@ -32,7 +32,8 @@ const PostSchema = new Schema({
     required: true,
   },
   picture: {
-    type: String,
+    data: Buffer,
+    contentType: String,
   },
   createdAt: {
     type: Date,

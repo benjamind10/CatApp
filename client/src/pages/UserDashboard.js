@@ -32,7 +32,8 @@ function UserDashboard() {
   const [newPostBody, setNewPostBody] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [editingPostId, setEditingPostId] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [postImages, setPostImages] = useState({});
+  const [selectedImage, setSelectedImage] = useState({});
 
   useEffect(() => {
     if (!userId) {
@@ -56,6 +57,14 @@ function UserDashboard() {
         const data = await response.json();
 
         setBlogPosts(data);
+        setPostImages(
+          data.reduce((images, post) => {
+            if (post.picture) {
+              images[post._id] = `${serverIP}${post.picture.data}`;
+            }
+            return images;
+          }, {})
+        );
       }
     } catch (error) {
       console.error('Error:', error);
@@ -83,7 +92,10 @@ function UserDashboard() {
     const formData = new FormData();
     formData.append('title', newPostTitle);
     formData.append('body', newPostBody);
-    formData.append('image', selectedImage);
+
+    if (selectedImage) {
+      formData.append('image', selectedImage);
+    }
 
     try {
       const response = await fetch(endpoint, {
@@ -120,7 +132,7 @@ function UserDashboard() {
               <Card className="mb-3" body key={index}>
                 <CardTitle tag="h5">{post.title}</CardTitle>
                 <CardText>{post.body}</CardText>
-                <img src={`${serverIP}${post.picture}`} alt="post" />
+                <img src={`${serverIP}/posts/images/${post._id}`} alt="post" />
                 <div className="center-buttons">
                   <Button
                     className="button-padding"

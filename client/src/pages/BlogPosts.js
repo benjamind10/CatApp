@@ -109,28 +109,6 @@ function BlogPosts() {
     }
   };
 
-  // const handleAddImage = async postId => {
-  //   if (!selectedImage) {
-  //     return;
-  //   }
-
-  //   const formData = new FormData();
-  //   formData.append('image', selectedImage);
-
-  //   try {
-  //     const response = await fetch(`${serverIP}/posts/${postId}/image`, {
-  //       method: 'POST',
-  //       body: formData,
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error(`HTTP error! status: ${response.status}`);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error:', error);
-  //   }
-  // };
-
   return (
     <>
       <Navigation />
@@ -147,11 +125,7 @@ function BlogPosts() {
                 </CardText>
                 {post.picture && (
                   <img
-                    src={
-                      process.env.NODE_ENV === 'production'
-                        ? `${process.env.REACT_APP_API_URL}/production/path/${post.picture}`
-                        : `/images/${post.picture}`
-                    }
+                    src={`${serverIP}/posts/images/${post._id}`}
                     alt={post.title}
                   />
                 )}

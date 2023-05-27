@@ -13,7 +13,7 @@ import Navigation from '../components/Navbar';
 import lunaImage from '../assets/luna.JPG';
 import obiImage from '../assets/obi.jpeg';
 
-function BlogPage() {
+function Family() {
   return (
     <>
       <Navigation />
@@ -63,4 +63,4 @@ function BlogPage() {
   );
 }
 
-export default BlogPage;
+export default Family;

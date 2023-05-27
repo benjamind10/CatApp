@@ -62,18 +62,13 @@ const Navigation = () => {
                   Images
                 </NavLink>
               </DropdownItem>
+              <DropdownItem>
+                <NavLink to="/family" tag={RouterNavLink}>
+                  Family
+                </NavLink>
+              </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
-          <NavItem>
-            <NavLink className="text-white" to="/family" tag={RouterNavLink}>
-              Family
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink className="text-white" to="/blog" tag={RouterNavLink}>
-              Blog
-            </NavLink>
-          </NavItem>
           {user ? (
             <>
               <NavItem>

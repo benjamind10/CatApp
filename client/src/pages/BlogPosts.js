@@ -22,6 +22,8 @@ const serverIP =
 
 function BlogPosts() {
   const [posts, setPosts] = useState([]);
+  const [comment, setComment] = useState('');
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     fetchPosts();
@@ -47,19 +49,86 @@ function BlogPosts() {
     }
   };
 
-  const handleLike = postId => {
-    // handle liking a post
-    console.log('Liked post with id: ', postId);
+  const handleCommentChange = e => {
+    setComment(e.target.value);
   };
 
-  const handleDislike = postId => {
-    // handle disliking a post
-    console.log('Disliked post with id: ', postId);
+  const handleImageChange = e => {
+    setSelectedImage(e.target.files[0]);
   };
 
-  const handleAddComment = (postId, comment) => {
-    // handle adding a comment to a post
-    console.log('Add comment: ', comment, ' to post with id: ', postId);
+  const handleLike = async postId => {
+    try {
+      const response = await fetch(`${serverIP}/posts/${postId}/like`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const handleDislike = async postId => {
+    try {
+      const response = await fetch(`${serverIP}/posts/${postId}/dislike`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const handleAddComment = async (postId, comment) => {
+    try {
+      const response = await fetch(`${serverIP}/posts/${postId}/comment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ comment }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const handleAddImage = async postId => {
+    if (!selectedImage) {
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('image', selectedImage);
+
+    try {
+      const response = await fetch(`${serverIP}/posts/${postId}/image`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   return (
@@ -94,7 +163,7 @@ function BlogPosts() {
                 <Form
                   onSubmit={e => {
                     e.preventDefault();
-                    handleAddComment(post._id, e.target.comment.value);
+                    handleAddComment(post._id, comment);
                   }}
                 >
                   <FormGroup>
@@ -103,7 +172,24 @@ function BlogPosts() {
                       name="comment"
                       id="comment"
                       placeholder="Add a comment"
+                      value={comment}
+                      onChange={handleCommentChange}
                     />
+                  </FormGroup>
+                  <FormGroup>
+                    <Input
+                      type="file"
+                      name="image"
+                      id="image"
+                      className="mb-3"
+                      onChange={handleImageChange}
+                    />
+                    <Button
+                      color="info"
+                      onClick={() => handleAddImage(post._id)}
+                    >
+                      Upload Image
+                    </Button>
                   </FormGroup>
                   <div
                     style={{

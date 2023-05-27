@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'; // Import useContext
+import React, { useState, useEffect, useContext } from 'react';
 import { NavLink as RouterNavLink, useNavigate } from 'react-router-dom';
 import {
   Navbar,
@@ -8,8 +8,12 @@ import {
   NavLink,
   NavbarToggler,
   Collapse,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
 } from 'reactstrap';
-import { UserContext } from '../context/UserContext'; // Import UserContext
+import { UserContext } from '../context/UserContext';
 
 import '../css/style.css';
 
@@ -33,7 +37,7 @@ const Navigation = () => {
           alt="Cat logo"
           style={{ height: '40px', marginRight: '10px' }}
         />
-        Liam's Cat Blog
+        Liam's Blog
       </NavbarBrand>
       <NavbarToggler onClick={toggle} style={{ backgroundColor: 'white' }} />
       <Collapse isOpen={isOpen} navbar>
@@ -43,11 +47,23 @@ const Navigation = () => {
               Main
             </NavLink>
           </NavItem>
-          <NavItem>
-            <NavLink className="text-white" to="/images" tag={RouterNavLink}>
-              Images
-            </NavLink>
-          </NavItem>
+          <UncontrolledDropdown nav inNavbar>
+            <DropdownToggle nav caret className="text-white">
+              Cat Info
+            </DropdownToggle>
+            <DropdownMenu right>
+              <DropdownItem>
+                <NavLink to="/breeds" tag={RouterNavLink}>
+                  Breeds
+                </NavLink>
+              </DropdownItem>
+              <DropdownItem>
+                <NavLink to="/images" tag={RouterNavLink}>
+                  Images
+                </NavLink>
+              </DropdownItem>
+            </DropdownMenu>
+          </UncontrolledDropdown>
           <NavItem>
             <NavLink className="text-white" to="/family" tag={RouterNavLink}>
               Family
@@ -89,3 +105,4 @@ const Navigation = () => {
 };
 
 export default Navigation;
+``;

@@ -6,7 +6,7 @@ import { fetchBreeds, fetchRandomBreed } from '../api';
 import Navigation from '../components/Navbar';
 import CustomButton from '../components/CustomButton';
 
-function Main() {
+function Breeds() {
   const [breeds, setBreeds] = useState([]);
   const [breedInput, setBreedInput] = useState('');
   const [noBreedFound, setNoBreedFound] = useState(false);
@@ -151,4 +151,4 @@ function Main() {
   );
 }
 
-export default Main;
+export default Breeds;

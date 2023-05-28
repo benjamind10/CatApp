@@ -4,6 +4,7 @@ const Post = require('../models/post');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs-extra');
+const mongoose = require('mongoose');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -125,10 +126,32 @@ router.delete('/delete/:postId/user/:userId', async (req, res) => {
 // Like a post
 router.put('/:postId/like', async (req, res) => {
   try {
-    await Post.updateOne({ _id: req.params.postId }, { $inc: { likes: 1 } });
+    const postId = req.params.postId;
+    const userId = req.query.userId;
+    console.log(postId, userId);
+
+    // Check if the user has already liked the post
+    const post = await Post.findOne({
+      _id: postId,
+      likes: userId,
+    });
+
+    if (post) {
+      // User has already liked the post, return an error or appropriate response
+      return res
+        .status(400)
+        .json({ message: 'User has already liked the post' });
+    }
+
+    // Push the user to the likes array
+    await Post.updateOne(
+      { _id: postId },
+      { $inc: { likesCount: 1 }, $push: { likes: userId } }
+    );
+
     res.json({ message: 'Liked the post' });
   } catch (err) {
-    res.json({ message: err });
+    res.status(500).json({ message: err.message });
   }
 });
 
@@ -144,21 +167,30 @@ router.put('/:postId/dislike', async (req, res) => {
 
 // Add a comment to a post
 router.post('/:postId/comment', async (req, res) => {
-  try {
-    const comment = {
-      user: req.body.user, // TODO: Set this to the actual user
-      text: req.body.comment,
-    };
+  const { body, userId, username } = req.body;
+  const { postId } = req.params;
 
-    await Post.updateOne(
-      { _id: req.params.postId },
-      { $push: { comments: comment } }
-    );
-
-    res.json({ message: 'Comment added' });
-  } catch (err) {
-    res.json({ message: err });
+  if (!postId) {
+    return res.status(400).send('Invalid postId');
   }
+
+  const post = await Post.findById(postId);
+
+  if (!post) {
+    return res.status(404).send('Post not found');
+  }
+
+  const comment = {
+    user: userId, // update this to the actual user id
+    body: body,
+    username: username,
+  };
+
+  post.comments.push(comment);
+
+  await post.save();
+
+  return res.status(200).send('Comment added successfully');
 });
 
 router.get('/images/:postId', async (req, res) => {

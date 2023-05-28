@@ -34,12 +34,14 @@ function UserDashboard() {
   const [editingPostId, setEditingPostId] = useState(null);
   const [postImages, setPostImages] = useState({});
   const [selectedImage, setSelectedImage] = useState({});
+  const [userInfo, setUserInfo] = useState({});
 
   useEffect(() => {
     if (!userId) {
       navigate('/');
     }
     fetchUserBlogPosts();
+    fetchUserInfo();
   }, [userId, navigate]);
 
   const fetchUserBlogPosts = async () => {
@@ -65,6 +67,27 @@ function UserDashboard() {
             return images;
           }, {})
         );
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const fetchUserInfo = async () => {
+    try {
+      const response = await fetch(`${serverIP}/user/${userId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      } else {
+        const data = await response.json();
+        console.log(data);
+        setUserInfo(data);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -127,6 +150,8 @@ function UserDashboard() {
       <Container>
         <Row>
           <Col md="8">
+            <h2>Welcome, {userInfo.username}</h2>
+            <h3>Email: {userInfo.email}</h3>
             <h2>Your Blog Posts</h2>
             {blogPosts.map((post, index) => (
               <Card className="mb-3" body key={index}>

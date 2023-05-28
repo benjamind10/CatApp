@@ -7,6 +7,11 @@ const CommentSchema = new Schema({
     ref: 'User',
     required: true,
   },
+  username: {
+    // Add this field to store username
+    type: String,
+    required: true,
+  },
   body: {
     type: String,
     required: true,
@@ -41,18 +46,15 @@ const PostSchema = new Schema({
   },
   likes: [
     {
-      user: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-      },
+      type: Schema.Types.ObjectId,
+      ref: 'User',
     },
   ],
+
   dislikes: [
     {
-      user: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-      },
+      type: Schema.Types.ObjectId,
+      ref: 'User',
     },
   ],
   comments: [CommentSchema],

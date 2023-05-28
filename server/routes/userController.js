@@ -83,15 +83,25 @@ router.patch('/:userId', async (req, res) => {
   try {
     const updatedUser = await User.updateOne(
       { _id: req.params.userId },
-      { $set: { username: req.body.username } }
+      {
+        $set: {
+          age: req.body.age,
+          description: req.body.description,
+          interests: req.body.interests,
+          favoriteBreeds: req.body.favoriteBreeds,
+        },
+      }
     );
-    res.json(updatedUser);
+    if (updatedUser.nModified === 0) {
+      res.json({ message: 'No changes were made' });
+    } else {
+      console.log(updatedUser);
+      res.json(updatedUser);
+    }
   } catch (err) {
     res.json({ message: err });
   }
 });
-
-module.exports = router;
 
 // Logout user
 router.post('/logout', async (req, res) => {
@@ -108,3 +118,15 @@ router.post('/logout', async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
+// Get user info
+router.get('/:userId', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId);
+    res.json(user);
+  } catch (err) {
+    res.json({ message: err });
+  }
+});
+
+module.exports = router;

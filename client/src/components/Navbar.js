@@ -81,6 +81,15 @@ const Navigation = () => {
                 </NavLink>
               </NavItem>
               <NavItem>
+                <NavLink
+                  className="text-white"
+                  to="/profile"
+                  tag={RouterNavLink}
+                >
+                  Profile
+                </NavLink>
+              </NavItem>
+              <NavItem>
                 <NavLink className="text-white" href="/" onClick={handleLogout}>
                   Logout
                 </NavLink>

@@ -24,6 +24,8 @@ function BlogPosts() {
   const [posts, setPosts] = useState([]);
   const [comment, setComment] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
+  const userId = localStorage.getItem('userId');
+  const username = localStorage.getItem('username');
 
   useEffect(() => {
     fetchPosts();
@@ -58,13 +60,20 @@ function BlogPosts() {
   };
 
   const handleLike = async postId => {
+    if (!userId) {
+      alert('You need to be logged in to like a post');
+      return;
+    }
     try {
-      const response = await fetch(`${serverIP}/posts/${postId}/like`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await fetch(
+        `${serverIP}/posts/${postId}/like?userId=${userId}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -91,19 +100,31 @@ function BlogPosts() {
     }
   };
 
-  const handleAddComment = async (postId, comment) => {
+  const handleAddComment = async (postId, comment, username) => {
+    if (!userId) {
+      alert('You need to be logged in to add a comment');
+      return;
+    }
+
     try {
       const response = await fetch(`${serverIP}/posts/${postId}/comment`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ comment }),
+        body: JSON.stringify({
+          body: comment,
+          userId: userId,
+          username: username,
+        }),
       });
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+
+      setComment(''); // reset the comment field
+      fetchPosts(); // refresh the posts to reflect the new comment
     } catch (error) {
       console.error('Error:', error);
     }
@@ -133,9 +154,9 @@ function BlogPosts() {
                   <Button
                     color="primary"
                     className="me-3"
-                    onClick={() => handleLike(post.id)}
+                    onClick={() => handleLike(post._id)}
                   >
-                    Like
+                    Like ({post.likes ? post.likes.length : 0})
                   </Button>
                   <Button
                     color="secondary"
@@ -144,10 +165,17 @@ function BlogPosts() {
                     Dislike
                   </Button>
                 </div>
+                {/* Add comments section */}
+                <h6>Comments:</h6>
+                {post.comments.map((comment, index) => (
+                  <CardText key={index}>
+                    {comment.body} - {comment.username}
+                  </CardText>
+                ))}
                 <Form
                   onSubmit={e => {
                     e.preventDefault();
-                    handleAddComment(post._id, comment);
+                    handleAddComment(post._id, comment, username);
                   }}
                 >
                   <FormGroup>

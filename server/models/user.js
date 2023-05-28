@@ -2,6 +2,17 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt');
 
+// const EntrySchema = new Schema({
+//   name: {
+//     type: String,
+//     required: true,
+//   },
+//   description: {
+//     type: String,
+//     required: true,
+//   },
+// });
+
 const UserSchema = new Schema({
   username: {
     type: String,
@@ -16,6 +27,20 @@ const UserSchema = new Schema({
     type: String,
     required: true,
     unique: true,
+  },
+  age: {
+    type: Number,
+    required: true,
+  },
+  interests: {
+    type: [String],
+    required: true,
+  },
+  favoriteBreeds: {
+    type: [String],
+  },
+  currentPets: {
+    type: [String],
   },
   createdAt: {
     type: Date,

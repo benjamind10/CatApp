@@ -12,6 +12,7 @@ import Home from './pages/Home';
 import Breeds from './pages/Breeds';
 
 import './css/style.css';
+import UserProfile from './pages/UserProfile';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/register" Component={SignUpForm} />
           <Route path="/dashboard" Component={UserDashboard} />
           <Route path="/login" Component={LoginForm} />
+          <Route path="/profile" Component={UserProfile} />
         </Routes>{' '}
       </Router>
     </UserProvider>

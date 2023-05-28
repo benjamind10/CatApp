@@ -19,16 +19,11 @@ router.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    // Find the user by username
     const user = await User.findOne({ username });
 
-    // If user not found or password doesn't match, return an error
     if (!user || !(await user.comparePassword(password))) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
-
-    // Generate a JWT token with the user ID as the payload
-    // Generate a JWT token with the user ID as the payload
     const token = jwt.sign(
       { userId: user._id, username: user.username },
       process.env.JWT_SECRET,
@@ -37,15 +32,12 @@ router.post('/login', async (req, res) => {
       }
     );
 
-    // Set the token as a cookie
     res.cookie('token', token, {
       httpOnly: true,
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       secure: process.env.NODE_ENV === 'production', // Set to true in production
       sameSite: 'none',
     });
-
-    // Return a success response
     res.json({ message: 'Login successful', token: token });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -54,10 +46,15 @@ router.post('/login', async (req, res) => {
 
 // Add new user
 router.post('/register', async (req, res) => {
+  const { username, password, email } = req.body;
+
+  // Hash the password
+  const hashedPassword = await bcrypt.hash(password, 10);
+
   const user = new User({
-    username: req.body.username,
-    password: req.body.password, // We're not hashing the password here.
-    email: req.body.email,
+    username,
+    password: hashedPassword, // Save the hashed password
+    email,
   });
 
   try {

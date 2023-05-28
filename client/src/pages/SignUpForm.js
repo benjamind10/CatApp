@@ -34,7 +34,23 @@ function SignUpForm() {
         throw new Error(`HTTP error! status: ${response.status}`);
       } else {
         console.log('User successfully created');
-        navigate('/');
+        const loginResponse = await fetch(`${serverIP}/user/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (!loginResponse.ok) {
+          throw new Error(`HTTP error! status: ${loginResponse.status}`);
+        } else {
+          const { token } = await loginResponse.json();
+          // Save token in localStorage or cookie
+          localStorage.setItem('token', token);
+          console.log('User successfully logged in');
+          navigate('/'); // Navigate to the main page or the logged-in user's page
+        }
       }
     } catch (error) {
       console.error('Error:', error);

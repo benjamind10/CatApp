@@ -135,7 +135,9 @@ function BlogPosts() {
       <Navigation />
       <Container>
         <Row>
-          <Col md="8">
+          <Col md={{ size: 8, offset: 2 }}>
+            {' '}
+            {/* Update here */}
             <h1>All Blog Posts</h1>
             {posts.map((post, index) => (
               <Card className="mb-3" body key={index}>
@@ -202,9 +204,6 @@ function BlogPosts() {
                 </Form>
               </Card>
             ))}
-          </Col>
-          <Col md="4">
-            <Sidebar />
           </Col>
         </Row>
       </Container>

@@ -51,11 +51,8 @@ function BlogPosts() {
       setLikeUsernames(newLikeUsernames);
     };
 
-    // Call the function to fetch the usernames
     fetchLikeUsernames();
   }, [posts]);
-
-  console.log(likeUsernames);
 
   const fetchPosts = async () => {
     try {
@@ -109,23 +106,6 @@ function BlogPosts() {
     }
   };
 
-  const handleDislike = async postId => {
-    try {
-      const response = await fetch(`${serverIP}/posts/${postId}/dislike`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
-
   const handleAddComment = async (postId, comment, username) => {
     if (!userId) {
       alert('You need to be logged in to add a comment');
@@ -149,8 +129,8 @@ function BlogPosts() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      setComment(''); // reset the comment field
-      fetchPosts(); // refresh the posts to reflect the new comment
+      setComment('');
+      fetchPosts();
     } catch (error) {
       console.error('Error:', error);
     }
@@ -170,7 +150,7 @@ function BlogPosts() {
       }
 
       const data = await response.json();
-      return data.username; // Assuming the returned user object has a "username" property
+      return data.username;
     } catch (error) {
       console.error('Error:', error);
       return null;
@@ -184,7 +164,6 @@ function BlogPosts() {
         <Row>
           <Col md={{ size: 8, offset: 2 }}>
             {' '}
-            {/* Update here */}
             <h1>All Blog Posts</h1>
             {posts.map((post, index) => (
               <Card className="mb-3" body key={index}>

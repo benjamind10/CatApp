@@ -213,7 +213,6 @@ function UserDashboard() {
             </Form>
           </Col>
           <Col md="4">
-            {/* This is a column for quick access buttons or controls */}
             <Sidebar />
           </Col>
         </Row>

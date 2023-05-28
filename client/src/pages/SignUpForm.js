@@ -33,7 +33,6 @@ function SignUpForm() {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       } else {
-        // You can perform actions on successful user creation here.
         console.log('User successfully created');
         navigate('/');
       }

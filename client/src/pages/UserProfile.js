@@ -187,6 +187,17 @@ function UserProfile() {
                   onChange={handleChange}
                 />
               </FormGroup>
+              <FormGroup>
+                <Label for="currentPets">Current Pets</Label>
+                <Input
+                  type="textarea"
+                  name="currentPets"
+                  id="currentPets"
+                  value={userInfo.currentPets || ''}
+                  readOnly={!isEditing}
+                  onChange={handleChange}
+                />
+              </FormGroup>
               {isEditing ? (
                 <Button onClick={handleSave}>Save</Button>
               ) : (

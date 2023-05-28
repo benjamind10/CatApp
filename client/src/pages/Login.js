@@ -34,17 +34,13 @@ function LoginForm() {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       } else {
-        // Login successful, redirect to home page
         const data = await response.json();
 
-        // Get the token from the response
         const token = data.token;
 
         if (token) {
           login(token);
-          // Navigate to the home page or dashboard
         } else {
-          // Show error message
           console.log('Error with token!');
         }
 

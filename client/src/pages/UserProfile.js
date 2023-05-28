@@ -258,18 +258,3 @@ function UserProfile() {
 }
 
 export default UserProfile;
-
-// const displayPets = () => {
-//   if (!userInfo.currentPets || userInfo.currentPets.length === 0) {
-//     return <p>User has no pets</p>;
-//   }
-//
-//   return userInfo.currentPets.map((pet) => (
-//       <Card key={pet.id}>
-//         <CardBody>
-//           <CardTitle tag="h5">{pet.name}</CardTitle>
-//           <CardText>{pet.description}</CardText>
-//         </CardBody>
-//       </Card>
-//   ));
-// };

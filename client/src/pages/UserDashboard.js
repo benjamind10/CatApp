@@ -12,6 +12,7 @@ import {
   CardTitle,
   CardText,
   CardBody,
+  CardImg,
 } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 
@@ -163,7 +164,7 @@ function UserDashboard() {
                 <h5>Email: {userInfo.email}</h5>
                 <img
                   className="img-fluid rounded-circle my-3"
-                  src={userInfo.profileImage} // Use userInfo.profileImage instead of userInfo.picture
+                  src={userInfo.profileImage}
                   alt="user profile"
                 />
                 <Button color="primary" block>
@@ -179,14 +180,15 @@ function UserDashboard() {
                 <CardBody>
                   <CardTitle tag="h5">{post.title}</CardTitle>
                   <CardText>{post.body}</CardText>
-                  {post.image && (
+                  {post.picture && (
                     <CardImg
                       top
-                      width="100%"
+                      className="post-image"
                       src={`${serverIP}/posts/images/${post._id}`}
-                      alt="post"
+                      alt={post.title}
                     />
                   )}
+                  }
                   <div className="text-right">
                     <Button
                       className="mt-3"
@@ -204,6 +206,7 @@ function UserDashboard() {
                 </CardBody>
               </Card>
             ))}
+
             <h2 className="mb-4">
               {isEditing ? 'Edit Post' : 'Add a New Blog Post'}
             </h2>

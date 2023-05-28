@@ -83,39 +83,6 @@ router.delete('/:userId', async (req, res) => {
 });
 
 // Update user
-// router.patch('/:userId', upload.single('image'), async (req, res) => {
-//   try {
-//     console.log(req.body);
-//     if (req.file) {
-//       updatedFields.picture = {
-//         data: fs.readFileSync(req.file.path),
-//         contentType: req.file.mimetype,
-//       };
-//     }
-//     const updatedUser = await User.updateOne(
-//       { _id: req.params.userId },
-//       {
-//         $set: {
-//           age: req.body.age,
-//           description: req.body.description,
-//           interests: req.body.interests,
-//           favoriteBreeds: req.body.favoriteBreeds,
-//           currentPets: req.body.currentPets,
-//         },
-//       }
-//     );
-//     if (updatedUser.nModified === 0) {
-//       res.json({ message: 'No changes were made' });
-//     } else {
-//       console.log(updatedUser);
-//       res.json(updatedUser);
-//     }
-//   } catch (err) {
-//     res.json({ message: err });
-//   }
-// });
-
-// Update user
 router.patch('/:userId', upload.single('picture'), async (req, res) => {
   try {
     const updatedFields = {

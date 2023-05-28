@@ -174,6 +174,7 @@ function BlogPosts() {
                 {post.picture && (
                   <CardImg
                     top
+                    className="post-image"
                     src={`${serverIP}/posts/images/${post._id}`}
                     alt={post.title}
                   />

@@ -24,7 +24,7 @@ function UserProfile() {
   const userId = localStorage.getItem('userId');
   const [userInfo, setUserInfo] = useState({});
   const [isEditing, setIsEditing] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); // add loading state
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (!userId) {
@@ -34,7 +34,7 @@ function UserProfile() {
   }, [userId, navigate]);
 
   const fetchUserInfo = async () => {
-    setIsLoading(true); // set loading state to true before fetch operation
+    setIsLoading(true);
     try {
       const response = await fetch(`${serverIP}/user/${userId}`, {
         method: 'GET',
@@ -47,8 +47,8 @@ function UserProfile() {
         throw new Error(`HTTP error! status: ${response.status}`);
       } else {
         const data = await response.json();
-        data.interests = data.interests.join(', ');
-        data.favoriteBreeds = data.favoriteBreeds.join(', ');
+        data.interests = data.interests.join(',').trim();
+        data.favoriteBreeds = data.favoriteBreeds.join(',').trim();
         setUserInfo(data);
         setIsLoading(false);
       }
@@ -84,10 +84,10 @@ function UserProfile() {
         ...userInfo,
         favoriteBreeds: Array.isArray(userInfo.favoriteBreeds)
           ? userInfo.favoriteBreeds
-          : userInfo.favoriteBreeds.split(','),
+          : userInfo.favoriteBreeds.split(',').map(item => item.trim()),
         interests: Array.isArray(userInfo.interests)
           ? userInfo.interests
-          : userInfo.interests.split(','),
+          : userInfo.interests.split(',').map(item => item.trim()),
       };
 
       const response = await fetch(`${serverIP}/user/${userId}`, {
@@ -201,3 +201,18 @@ function UserProfile() {
 }
 
 export default UserProfile;
+
+// const displayPets = () => {
+//   if (!userInfo.currentPets || userInfo.currentPets.length === 0) {
+//     return <p>User has no pets</p>;
+//   }
+//
+//   return userInfo.currentPets.map((pet) => (
+//       <Card key={pet.id}>
+//         <CardBody>
+//           <CardTitle tag="h5">{pet.name}</CardTitle>
+//           <CardText>{pet.description}</CardText>
+//         </CardBody>
+//       </Card>
+//   ));
+// };

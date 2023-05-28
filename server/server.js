@@ -70,6 +70,10 @@ app.use((req, res, next) => {
   });
   next();
 });
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} to ${req.url}`);
+  next();
+});
 
 // Routes
 app.use('/api/posts', blogPostController);

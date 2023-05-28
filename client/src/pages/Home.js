@@ -26,10 +26,36 @@ function BlogPosts() {
   const [selectedImage, setSelectedImage] = useState(null);
   const userId = localStorage.getItem('userId');
   const username = localStorage.getItem('username');
+  const [likeUsernames, setLikeUsernames] = useState({});
 
   useEffect(() => {
     fetchPosts();
   }, []);
+
+  useEffect(() => {
+    const fetchUsername = async userId => {
+      const response = await fetch(`${serverIP}/user/${userId}`);
+      const data = await response.json();
+      return data.username;
+    };
+
+    const fetchLikeUsernames = async () => {
+      const newLikeUsernames = {};
+      for (const post of posts) {
+        newLikeUsernames[post._id] = [];
+        for (const userId of post.likes) {
+          const username = await fetchUsername(userId);
+          newLikeUsernames[post._id].push(username);
+        }
+      }
+      setLikeUsernames(newLikeUsernames);
+    };
+
+    // Call the function to fetch the usernames
+    fetchLikeUsernames();
+  }, [posts]);
+
+  console.log(likeUsernames);
 
   const fetchPosts = async () => {
     try {
@@ -130,6 +156,27 @@ function BlogPosts() {
     }
   };
 
+  const fetchUsername = async userId => {
+    try {
+      const response = await fetch(`${serverIP}/user/${userId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.username; // Assuming the returned user object has a "username" property
+    } catch (error) {
+      console.error('Error:', error);
+      return null;
+    }
+  };
+
   return (
     <>
       <Navigation />
@@ -160,20 +207,30 @@ function BlogPosts() {
                   >
                     Like ({post.likes ? post.likes.length : 0})
                   </Button>
-                  <Button
+                  {/* <Button
                     color="secondary"
                     onClick={() => handleDislike(post._id)}
                   >
                     Dislike
-                  </Button>
+                  </Button> */}
                 </div>
-                {/* Add comments section */}
-                <h6>Comments:</h6>
-                {post.comments.map((comment, index) => (
-                  <CardText key={index}>
-                    {comment.body} - {comment.username}
-                  </CardText>
-                ))}
+                {likeUsernames[post._id] &&
+                  likeUsernames[post._id].length > 0 && (
+                    <div className="d-flex flex-column align-items-center">
+                      <h6>Users who liked this post:</h6>
+                      {likeUsernames[post._id].map((username, index) => (
+                        <p key={index}>{username}</p>
+                      ))}
+                    </div>
+                  )}
+                <div className="d-flex flex-column align-items-center">
+                  <h6>Comments:</h6>
+                  {post.comments.map((comment, index) => (
+                    <CardText key={index}>
+                      {comment.body} - {comment.username}
+                    </CardText>
+                  ))}
+                </div>
                 <Form
                   onSubmit={e => {
                     e.preventDefault();

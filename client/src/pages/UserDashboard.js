@@ -11,6 +11,7 @@ import {
   Card,
   CardTitle,
   CardText,
+  CardBody,
 } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 
@@ -87,7 +88,13 @@ function UserDashboard() {
       } else {
         const data = await response.json();
         console.log(data);
-        setUserInfo(data);
+
+        // assuming data.profileImage is the filename of the image
+        const profileImage = `${serverIP}/user/${userId}/picture`;
+        setUserInfo({
+          ...data,
+          profileImage,
+        });
       }
     } catch (error) {
       console.error('Error:', error);
@@ -149,32 +156,57 @@ function UserDashboard() {
       <Navigation />
       <Container>
         <Row>
+          <Col md="4">
+            <Card>
+              <CardBody>
+                <h4>Welcome, {userInfo.username}</h4>
+                <h5>Email: {userInfo.email}</h5>
+                <img
+                  className="img-fluid rounded-circle my-3"
+                  src={userInfo.profileImage} // Use userInfo.profileImage instead of userInfo.picture
+                  alt="user profile"
+                />
+                <Button color="primary" block>
+                  Edit Profile
+                </Button>
+              </CardBody>
+            </Card>
+          </Col>
           <Col md="8">
-            <h2>Welcome, {userInfo.username}</h2>
-            <h3>Email: {userInfo.email}</h3>
-            <h2>Your Blog Posts</h2>
+            <h2 className="mb-4">Your Blog Posts</h2>
             {blogPosts.map((post, index) => (
-              <Card className="mb-3" body key={index}>
-                <CardTitle tag="h5">{post.title}</CardTitle>
-                <CardText>{post.body}</CardText>
-                <img src={`${serverIP}/posts/images/${post._id}`} alt="post" />
-                <div className="center-buttons">
-                  <Button
-                    className="button-padding"
-                    color="primary"
-                    onClick={() =>
-                      startEditPost(post._id, post.title, post.body)
-                    }
-                  >
-                    Edit
-                  </Button>
-                  <Button className="button-padding" color="danger">
-                    Delete
-                  </Button>
-                </div>
+              <Card className="mb-4" key={index}>
+                <CardBody>
+                  <CardTitle tag="h5">{post.title}</CardTitle>
+                  <CardText>{post.body}</CardText>
+                  {post.image && (
+                    <CardImg
+                      top
+                      width="100%"
+                      src={`${serverIP}/posts/images/${post._id}`}
+                      alt="post"
+                    />
+                  )}
+                  <div className="text-right">
+                    <Button
+                      className="mt-3"
+                      color="primary"
+                      onClick={() =>
+                        startEditPost(post._id, post.title, post.body)
+                      }
+                    >
+                      Edit
+                    </Button>{' '}
+                    <Button className="mt-3" color="danger">
+                      Delete
+                    </Button>
+                  </div>
+                </CardBody>
               </Card>
             ))}
-            <h2>{isEditing ? 'Edit Post' : 'Add a New Blog Post'}</h2>
+            <h2 className="mb-4">
+              {isEditing ? 'Edit Post' : 'Add a New Blog Post'}
+            </h2>
             <Form onSubmit={handleNewPost}>
               <FormGroup>
                 <Label for="postTitle">Title</Label>
@@ -209,11 +241,10 @@ function UserDashboard() {
                   onChange={handleImageChange}
                 />
               </FormGroup>
-              <Button type="submit">Post</Button>
+              <Button type="submit" block>
+                Post
+              </Button>
             </Form>
-          </Col>
-          <Col md="4">
-            <Sidebar />
           </Col>
         </Row>
       </Container>

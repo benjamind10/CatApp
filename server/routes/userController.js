@@ -5,16 +5,11 @@ const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname);
+const upload = multer({
+  limits: {
+    fileSize: 1024 * 1024 * 1024,
   },
 });
-
-const upload = multer({ storage: storage });
 
 // Get all users
 router.get('/', async (req, res) => {
@@ -88,31 +83,64 @@ router.delete('/:userId', async (req, res) => {
 });
 
 // Update user
-router.patch('/:userId', upload.single('image'), async (req, res) => {
+// router.patch('/:userId', upload.single('image'), async (req, res) => {
+//   try {
+//     console.log(req.body);
+//     if (req.file) {
+//       updatedFields.picture = {
+//         data: fs.readFileSync(req.file.path),
+//         contentType: req.file.mimetype,
+//       };
+//     }
+//     const updatedUser = await User.updateOne(
+//       { _id: req.params.userId },
+//       {
+//         $set: {
+//           age: req.body.age,
+//           description: req.body.description,
+//           interests: req.body.interests,
+//           favoriteBreeds: req.body.favoriteBreeds,
+//           currentPets: req.body.currentPets,
+//         },
+//       }
+//     );
+//     if (updatedUser.nModified === 0) {
+//       res.json({ message: 'No changes were made' });
+//     } else {
+//       console.log(updatedUser);
+//       res.json(updatedUser);
+//     }
+//   } catch (err) {
+//     res.json({ message: err });
+//   }
+// });
+
+// Update user
+router.patch('/:userId', upload.single('picture'), async (req, res) => {
   try {
-    console.log(req.body);
+    const updatedFields = {
+      age: req.body.age,
+      description: req.body.description,
+      interests: req.body.interests,
+      favoriteBreeds: req.body.favoriteBreeds,
+      currentPets: req.body.currentPets,
+    };
+
     if (req.file) {
       updatedFields.picture = {
         data: fs.readFileSync(req.file.path),
         contentType: req.file.mimetype,
       };
     }
+
     const updatedUser = await User.updateOne(
       { _id: req.params.userId },
-      {
-        $set: {
-          age: req.body.age,
-          description: req.body.description,
-          interests: req.body.interests,
-          favoriteBreeds: req.body.favoriteBreeds,
-          currentPets: req.body.currentPets,
-        },
-      }
+      { $set: updatedFields }
     );
+
     if (updatedUser.nModified === 0) {
       res.json({ message: 'No changes were made' });
     } else {
-      console.log(updatedUser);
       res.json(updatedUser);
     }
   } catch (err) {
@@ -147,21 +175,39 @@ router.get('/:userId', async (req, res) => {
 });
 
 // Get user images
-router.get('/images/:userId', async (req, res) => {
-  const userId = req.params.userId;
-
+router.put('/:userId/picture', upload.single('picture'), async (req, res) => {
   try {
-    const user = await User.findById(userId);
+    const user = await User.findById(req.params.userId);
 
-    if (!user || !user.picture) {
-      return res.status(404).json({ message: 'Image not found' });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.picture = {
+      data: req.file.buffer,
+      contentType: req.file.mimetype,
+    };
+
+    const updatedUser = await user.save();
+
+    res.json(updatedUser);
+  } catch (err) {
+    res.json({ message: err });
+  }
+});
+
+router.get('/:userId/picture', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId);
+
+    if (!user || !user.picture.data) {
+      return res.status(404).json({ message: 'No picture found' });
     }
 
     res.set('Content-Type', user.picture.contentType);
     res.send(user.picture.data);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+  } catch (err) {
+    res.json({ message: err });
   }
 });
 

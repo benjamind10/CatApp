@@ -9,10 +9,13 @@ import {
   Container,
   Row,
   Col,
+  Card,
+  CardBody,
 } from 'reactstrap';
 import Navigation from '../components/Navbar';
 import { UserContext } from '../context/UserContext';
 import '../css/Profile.css';
+import axios from 'axios';
 
 function UserProfile() {
   const serverIP =
@@ -94,14 +97,16 @@ function UserProfile() {
         setUserInfo(data);
         setIsEditing(false);
         fetchUserInfo();
+
+        if (selectedImage) {
+          handleImageUpload(); // handle image upload
+        } else {
+          fetchUserInfo(); // update user info
+        }
       }
     } catch (error) {
       console.error('Error:', error);
     }
-  };
-
-  const handleImageChange = e => {
-    setSelectedImage(e.target.files[0]);
   };
 
   const handleImageUpload = async () => {
@@ -125,110 +130,126 @@ function UserProfile() {
     }
   };
 
+  const handleImageChange = e => {
+    setSelectedImage(e.target.files[0]);
+  };
+
   return isLoading ? (
     <div>Loading...</div>
   ) : (
     <>
       <Navigation />
-      <Container className="Profile">
+      <Container className="Profile my-5">
         <Row>
-          <Col md="6">
-            <h2>Your Profile</h2>
-            <Form>
-              <FormGroup>
-                <Label for="username">Username</Label>
-                <Input
-                  type="text"
-                  name="username"
-                  id="username"
-                  value={userInfo.username || ''}
-                  readOnly={!isEditing}
-                  onChange={handleChange}
+          <Col md="4">
+            <Card>
+              <CardBody>
+                <img
+                  src={
+                    userInfo.picture
+                      ? `${serverIP}/user/${userId}/picture`
+                      : 'DEFAULT_IMAGE_URL'
+                  }
+                  alt="Profile"
+                  className="img-fluid rounded-circle mb-4"
                 />
-              </FormGroup>
-              <FormGroup>
-                <Label for="email">Email</Label>
-                <Input
-                  type="email"
-                  name="email"
-                  id="email"
-                  value={userInfo.email || ''}
-                  readOnly={!isEditing}
-                  onChange={handleChange}
-                />
-              </FormGroup>
-              <FormGroup>
-                <Label for="age">Age</Label>
-                <Input
-                  type="number"
-                  name="age"
-                  id="age"
-                  value={userInfo.age || ''}
-                  readOnly={!isEditing}
-                  onChange={handleChange}
-                />
-              </FormGroup>
-              <FormGroup>
-                <Label for="description">Description</Label>
-                <Input
-                  type="textarea"
-                  name="description"
-                  id="description"
-                  value={userInfo.description || ''}
-                  readOnly={!isEditing}
-                  onChange={handleChange}
-                />
-              </FormGroup>
-              <FormGroup>
-                <Label for="interests">Interests</Label>
-                <Input
-                  type="textarea"
-                  name="interests"
-                  id="interests"
-                  value={userInfo.interests || ''}
-                  readOnly={!isEditing}
-                  onChange={handleChange}
-                />
-              </FormGroup>
-              <FormGroup>
-                <Label for="favoriteBreeds">Favorite Breeds</Label>
-                <Input
-                  type="textarea"
-                  name="favoriteBreeds"
-                  id="favoriteBreeds"
-                  value={userInfo.favoriteBreeds || ''}
-                  readOnly={!isEditing}
-                  onChange={handleChange}
-                />
-              </FormGroup>
-              <FormGroup>
-                <Label for="currentPets">Current Pets</Label>
-                <Input
-                  type="textarea"
-                  name="currentPets"
-                  id="currentPets"
-                  value={userInfo.currentPets || ''}
-                  readOnly={!isEditing}
-                  onChange={handleChange}
-                />
-              </FormGroup>
-              {isEditing ? (
-                <Button onClick={handleSave}>Save</Button>
-              ) : (
-                <Button onClick={handleEdit}>Edit Profile</Button>
-              )}
-            </Form>
+                <h2 className="mb-4">{userInfo.username}</h2>
+                {isEditing ? (
+                  <Button color="primary" block onClick={handleSave}>
+                    Save Changes
+                  </Button>
+                ) : (
+                  <Button color="secondary" block onClick={handleEdit}>
+                    Edit Profile
+                  </Button>
+                )}
+              </CardBody>
+            </Card>
           </Col>
-          <Col md="6">
-            <img
-              src={
-                userInfo.picture
-                  ? `${serverIP}/user/images/${userId}`
-                  : 'DEFAULT_IMAGE_URL'
-              }
-              alt="Profile"
-              className="img-fluid"
-            />
+          <Col md="8">
+            <Card>
+              <CardBody>
+                <Form>
+                  <FormGroup>
+                    <Label for="email">Email</Label>
+                    <Input
+                      type="email"
+                      name="email"
+                      id="email"
+                      value={userInfo.email || ''}
+                      readOnly={!isEditing}
+                      onChange={handleChange}
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <Label for="age">Age</Label>
+                    <Input
+                      type="number"
+                      name="age"
+                      id="age"
+                      value={userInfo.age || ''}
+                      readOnly={!isEditing}
+                      onChange={handleChange}
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <Label for="description">Description</Label>
+                    <Input
+                      type="textarea"
+                      name="description"
+                      id="description"
+                      value={userInfo.description || ''}
+                      readOnly={!isEditing}
+                      onChange={handleChange}
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <Label for="interests">Interests</Label>
+                    <Input
+                      type="textarea"
+                      name="interests"
+                      id="interests"
+                      value={userInfo.interests || ''}
+                      readOnly={!isEditing}
+                      onChange={handleChange}
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <Label for="favoriteBreeds">Favorite Breeds</Label>
+                    <Input
+                      type="textarea"
+                      name="favoriteBreeds"
+                      id="favoriteBreeds"
+                      value={userInfo.favoriteBreeds || ''}
+                      readOnly={!isEditing}
+                      onChange={handleChange}
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <Label for="currentPets">Current Pets</Label>
+                    <Input
+                      type="textarea"
+                      name="currentPets"
+                      id="currentPets"
+                      value={userInfo.currentPets || ''}
+                      readOnly={!isEditing}
+                      onChange={handleChange}
+                    />
+                  </FormGroup>
+                  {isEditing && (
+                    <FormGroup>
+                      <Label for="profilePicture">Profile Picture</Label>
+                      <Input
+                        type="file"
+                        name="profilePicture"
+                        id="profilePicture"
+                        onChange={handleImageChange}
+                      />
+                    </FormGroup>
+                  )}
+                </Form>
+              </CardBody>
+            </Card>
           </Col>
         </Row>
       </Container>

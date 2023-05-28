@@ -10,6 +10,10 @@ import {
   Form,
   Row,
   Col,
+  CardImg,
+  CardBody,
+  CardSubtitle,
+  Badge,
 } from 'reactstrap';
 
 import Navigation from '../components/Navbar';
@@ -101,6 +105,7 @@ function BlogPosts() {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      fetchPosts();
     } catch (error) {
       console.error('Error:', error);
     }
@@ -160,84 +165,74 @@ function BlogPosts() {
   return (
     <>
       <Navigation />
-      <Container>
+      <Container className="mt-4">
         <Row>
           <Col md={{ size: 8, offset: 2 }}>
-            {' '}
-            <h1>All Blog Posts</h1>
+            <h1 className="mb-5 text-center">All Blog Posts</h1>
             {posts.map((post, index) => (
-              <Card className="mb-3" body key={index}>
-                <CardTitle tag="h5">{post.title}</CardTitle>
-                <CardText>{post.body}</CardText>
-                <CardText className="text-muted font-italic small">
-                  {post.user.username}
-                </CardText>
+              <Card className="mb-5 shadow" body key={index}>
                 {post.picture && (
-                  <img
+                  <CardImg
+                    top
                     src={`${serverIP}/posts/images/${post._id}`}
                     alt={post.title}
                   />
                 )}
-                <div className="d-flex justify-content-center my-3">
-                  <Button
-                    color="primary"
-                    className="me-3"
-                    onClick={() => handleLike(post._id)}
-                  >
-                    Like ({post.likes ? post.likes.length : 0})
-                  </Button>
-                  {/* <Button
-                    color="secondary"
-                    onClick={() => handleDislike(post._id)}
-                  >
-                    Dislike
-                  </Button> */}
-                </div>
-                {likeUsernames[post._id] &&
-                  likeUsernames[post._id].length > 0 && (
-                    <div className="d-flex flex-column align-items-center">
-                      <h6>Users who liked this post:</h6>
-                      {likeUsernames[post._id].map((username, index) => (
-                        <p key={index}>{username}</p>
-                      ))}
-                    </div>
-                  )}
-                <div className="d-flex flex-column align-items-center">
-                  <h6>Comments:</h6>
-                  {post.comments.map((comment, index) => (
-                    <CardText key={index}>
-                      {comment.body} - {comment.username}
-                    </CardText>
-                  ))}
-                </div>
-                <Form
-                  onSubmit={e => {
-                    e.preventDefault();
-                    handleAddComment(post._id, comment, username);
-                  }}
-                >
-                  <FormGroup>
-                    <Input
-                      type="text"
-                      name="comment"
-                      id="comment"
-                      placeholder="Add a comment"
-                      value={comment}
-                      onChange={handleCommentChange}
-                    />
-                  </FormGroup>
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      marginTop: '1rem',
+                <CardBody>
+                  <CardTitle tag="h5">{post.title}</CardTitle>
+                  <CardText>{post.body}</CardText>
+                  <CardSubtitle className="text-muted font-italic small mb-3">
+                    {post.user.username}
+                  </CardSubtitle>
+                  <hr />
+                  <div className="d-flex justify-content-between align-items-center">
+                    <Button
+                      color="primary"
+                      onClick={() => handleLike(post._id)}
+                    >
+                      Like ({post.likes ? post.likes.length : 0})
+                    </Button>
+                    {likeUsernames[post._id] &&
+                      likeUsernames[post._id].length > 0 && (
+                        <div>
+                          <h6>Users who liked this post:</h6>
+                          {likeUsernames[post._id].map((username, index) => (
+                            <Badge key={index} className="me-2">
+                              {username}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                  </div>
+                  <div className="mt-4">
+                    <h6>Comments:</h6>
+                    {post.comments.map((comment, index) => (
+                      <CardText key={index} className="border-bottom pb-2 mb-2">
+                        <strong>{comment.username}</strong>: {comment.body}
+                      </CardText>
+                    ))}
+                  </div>
+                  <Form
+                    onSubmit={e => {
+                      e.preventDefault();
+                      handleAddComment(post._id, comment, username);
                     }}
                   >
-                    <div className="d-flex justify-content-center">
-                      <Button type="submit">Add Comment</Button>
-                    </div>
-                  </div>
-                </Form>
+                    <FormGroup>
+                      <Input
+                        type="text"
+                        name="comment"
+                        id="comment"
+                        placeholder="Add a comment"
+                        value={comment}
+                        onChange={handleCommentChange}
+                      />
+                    </FormGroup>
+                    <Button type="submit" color="primary" className="mt-3">
+                      Add Comment
+                    </Button>
+                  </Form>
+                </CardBody>
               </Card>
             ))}
           </Col>

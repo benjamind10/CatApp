@@ -3,6 +3,18 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 // Get all users
 router.get('/', async (req, res) => {
@@ -76,8 +88,15 @@ router.delete('/:userId', async (req, res) => {
 });
 
 // Update user
-router.patch('/:userId', async (req, res) => {
+router.patch('/:userId', upload.single('image'), async (req, res) => {
   try {
+    console.log(req.body);
+    if (req.file) {
+      updatedFields.picture = {
+        data: fs.readFileSync(req.file.path),
+        contentType: req.file.mimetype,
+      };
+    }
     const updatedUser = await User.updateOne(
       { _id: req.params.userId },
       {
@@ -86,6 +105,7 @@ router.patch('/:userId', async (req, res) => {
           description: req.body.description,
           interests: req.body.interests,
           favoriteBreeds: req.body.favoriteBreeds,
+          currentPets: req.body.currentPets,
         },
       }
     );
@@ -123,6 +143,25 @@ router.get('/:userId', async (req, res) => {
     res.json(user);
   } catch (err) {
     res.json({ message: err });
+  }
+});
+
+// Get user images
+router.get('/images/:userId', async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user || !user.picture) {
+      return res.status(404).json({ message: 'Image not found' });
+    }
+
+    res.set('Content-Type', user.picture.contentType);
+    res.send(user.picture.data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 

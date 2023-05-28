@@ -25,6 +25,7 @@ function UserProfile() {
   const [userInfo, setUserInfo] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     if (!userId) {
@@ -68,18 +69,6 @@ function UserProfile() {
 
   const handleSave = async () => {
     try {
-      if (
-        !userInfo.username.trim() ||
-        !userInfo.email.trim() ||
-        !userInfo.age.trim() ||
-        !userInfo.description.trim() ||
-        !userInfo.interests.trim() ||
-        !userInfo.favoriteBreeds.trim()
-      ) {
-        alert('All fields are required.');
-        return;
-      }
-
       const updatedUserInfo = {
         ...userInfo,
         favoriteBreeds: Array.isArray(userInfo.favoriteBreeds)
@@ -104,6 +93,31 @@ function UserProfile() {
         const data = await response.json();
         setUserInfo(data);
         setIsEditing(false);
+        fetchUserInfo();
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const handleImageChange = e => {
+    setSelectedImage(e.target.files[0]);
+  };
+
+  const handleImageUpload = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('picture', selectedImage);
+
+      const response = await fetch(`${serverIP}/user/${userId}/picture`, {
+        method: 'PUT',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      } else {
+        alert('Image uploaded successfully');
         fetchUserInfo();
       }
     } catch (error) {
@@ -204,6 +218,17 @@ function UserProfile() {
                 <Button onClick={handleEdit}>Edit Profile</Button>
               )}
             </Form>
+          </Col>
+          <Col md="6">
+            <img
+              src={
+                userInfo.picture
+                  ? `${serverIP}/user/images/${userId}`
+                  : 'DEFAULT_IMAGE_URL'
+              }
+              alt="Profile"
+              className="img-fluid"
+            />
           </Col>
         </Row>
       </Container>

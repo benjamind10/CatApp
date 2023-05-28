@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Button, Form, FormGroup, Label, Input, Container } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 
 import Navigation from '../components/Navbar';
+import { UserContext } from '../context/UserContext';
 
 function SignUpForm() {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const { login } = useContext(UserContext);
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -42,14 +44,20 @@ function SignUpForm() {
           body: JSON.stringify(data),
         });
 
-        if (!loginResponse.ok) {
-          throw new Error(`HTTP error! status: ${loginResponse.status}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         } else {
-          const { token } = await loginResponse.json();
-          // Save token in localStorage or cookie
-          localStorage.setItem('token', token);
-          console.log('User successfully logged in');
-          navigate('/'); // Navigate to the main page or the logged-in user's page
+          const data = await response.json();
+
+          const token = data.token;
+
+          if (token) {
+            login(token);
+          } else {
+            console.log('Error with token!');
+          }
+
+          navigate('/dashboard');
         }
       }
     } catch (error) {

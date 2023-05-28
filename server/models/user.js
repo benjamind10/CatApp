@@ -28,6 +28,10 @@ const UserSchema = new Schema({
     required: true,
     unique: true,
   },
+  description: {
+    type: String,
+    required: false,
+  },
   age: {
     type: Number,
     required: false,
@@ -45,6 +49,10 @@ const UserSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  picture: {
+    data: Buffer,
+    contentType: String,
   },
 });
 

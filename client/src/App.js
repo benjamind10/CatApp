@@ -10,9 +10,10 @@ import UserDashboard from './pages/UserDashboard';
 import LoginForm from './pages/Login';
 import Home from './pages/Home';
 import Breeds from './pages/Breeds';
+import Profiles from './pages/Profiles';
+import UserProfile from './pages/UserProfile';
 
 import './css/style.css';
-import UserProfile from './pages/UserProfile';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/dashboard" Component={UserDashboard} />
           <Route path="/login" Component={LoginForm} />
           <Route path="/profile" Component={UserProfile} />
+          <Route path="/profiles" Component={Profiles} />
         </Routes>{' '}
       </Router>
     </UserProvider>

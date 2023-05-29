@@ -12,10 +12,12 @@ import {
   Card,
   CardBody,
 } from 'reactstrap';
-import Navigation from '../components/Navbar';
-import { UserContext } from '../context/UserContext';
-import '../css/Profile.css';
 import axios from 'axios';
+
+import { UserContext } from '../context/UserContext';
+import Navigation from '../components/Navbar';
+
+import '../css/Profile.css';
 
 function UserProfile() {
   const serverIP =
@@ -51,8 +53,9 @@ function UserProfile() {
         throw new Error(`HTTP error! status: ${response.status}`);
       } else {
         const data = await response.json();
-        data.interests = data.interests.join(',').trim();
-        data.favoriteBreeds = data.favoriteBreeds.join(',').trim();
+        data.interests = data.interests.join(', ').trim();
+        data.favoriteBreeds = data.favoriteBreeds.join(', ').trim();
+        data.currentPets = data.currentPets.join(', ').trim();
         setUserInfo(data);
         setIsLoading(false);
       }
@@ -80,6 +83,9 @@ function UserProfile() {
         interests: Array.isArray(userInfo.interests)
           ? userInfo.interests
           : userInfo.interests.split(',').map(item => item.trim()),
+        currentPets: Array.isArray(userInfo.currentPets)
+          ? userInfo.currentPets
+          : userInfo.cur.split(',').map(item => item.trim()),
       };
 
       const response = await fetch(`${serverIP}/user/${userId}`, {

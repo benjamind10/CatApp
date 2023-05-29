@@ -17,9 +17,9 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 import Navigation from '../components/Navbar';
+import Sidebar from '../components/Sidebar';
 
 import '../css/UserDashboard.css';
-import Sidebar from '../components/Sidebar';
 
 function UserDashboard() {
   const serverIP =
@@ -157,7 +157,7 @@ function UserDashboard() {
       <Navigation />
       <Container>
         <Row>
-          <Col md="4">
+          <Col className="profile-card" md="4">
             <Card>
               <CardBody>
                 <h4>Welcome, {userInfo.username}</h4>
@@ -188,7 +188,6 @@ function UserDashboard() {
                       alt={post.title}
                     />
                   )}
-                  }
                   <div className="text-right">
                     <Button
                       className="mt-3"

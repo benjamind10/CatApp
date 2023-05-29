@@ -90,6 +90,15 @@ const Navigation = () => {
                 </NavLink>
               </NavItem>
               <NavItem>
+                <NavLink
+                  className="text-white"
+                  to="/profiles"
+                  tag={RouterNavLink}
+                >
+                  All Users
+                </NavLink>
+              </NavItem>
+              <NavItem>
                 <NavLink className="text-white" href="/" onClick={handleLogout}>
                   Logout
                 </NavLink>

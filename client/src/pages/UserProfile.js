@@ -79,14 +79,22 @@ function UserProfile() {
         ...userInfo,
         favoriteBreeds: Array.isArray(userInfo.favoriteBreeds)
           ? userInfo.favoriteBreeds
-          : userInfo.favoriteBreeds.split(',').map(item => item.trim()),
+          : userInfo.favoriteBreeds
+          ? userInfo.favoriteBreeds.split(',').map(item => item.trim())
+          : [],
         interests: Array.isArray(userInfo.interests)
           ? userInfo.interests
-          : userInfo.interests.split(',').map(item => item.trim()),
+          : userInfo.interests
+          ? userInfo.interests.split(',').map(item => item.trim())
+          : [],
         currentPets: Array.isArray(userInfo.currentPets)
           ? userInfo.currentPets
-          : userInfo.cur.split(',').map(item => item.trim()),
+          : userInfo.currentPets
+          ? userInfo.currentPets.split(',').map(item => item.trim())
+          : [],
       };
+
+      console.log(JSON.stringify(updatedUserInfo));
 
       const response = await fetch(`${serverIP}/user/${userId}`, {
         method: 'PATCH',

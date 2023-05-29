@@ -1,0 +1,4 @@
+.navbar .dropdown-menu {
+  right: 0; /* Aligns the dropdown menu to the right edge of parent */
+  left: auto; /* Overrides default alignment */
+}

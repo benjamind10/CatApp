@@ -16,6 +16,7 @@ import {
 import { UserContext } from '../context/UserContext';
 
 import '../css/style.css';
+import '../css/Navbar.css';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -70,41 +71,38 @@ const Navigation = () => {
             </DropdownMenu>
           </UncontrolledDropdown>
           {user ? (
-            <>
-              <NavItem>
-                <NavLink
-                  className="text-white"
-                  to="/dashboard"
-                  tag={RouterNavLink}
-                >
-                  Dashboard
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink
-                  className="text-white"
-                  to="/profile"
-                  tag={RouterNavLink}
-                >
-                  Profile
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink
-                  className="text-white"
-                  to="/profiles"
-                  tag={RouterNavLink}
-                >
-                  All Users
-                </NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink className="text-white" href="/" onClick={handleLogout}>
-                  Logout
-                </NavLink>
-              </NavItem>
-            </>
+            // ...
+            <UncontrolledDropdown nav inNavbar>
+              <DropdownToggle nav caret className="text-white">
+                User
+              </DropdownToggle>
+              <DropdownMenu right>
+                <DropdownItem>
+                  <NavLink to="/dashboard" tag={RouterNavLink}>
+                    Dashboard
+                  </NavLink>
+                </DropdownItem>
+                <DropdownItem>
+                  <NavLink to="/profile" tag={RouterNavLink}>
+                    Profile
+                  </NavLink>
+                </DropdownItem>
+                <DropdownItem>
+                  <NavLink to="/profiles" tag={RouterNavLink}>
+                    All Users
+                  </NavLink>
+                </DropdownItem>
+                <DropdownItem divider />
+                <DropdownItem>
+                  <NavLink href="/" onClick={handleLogout}>
+                    Logout
+                  </NavLink>
+                </DropdownItem>
+              </DropdownMenu>
+            </UncontrolledDropdown>
           ) : (
+            // ...
+
             <NavItem>
               <NavLink className="text-white" to="/login" tag={RouterNavLink}>
                 Login

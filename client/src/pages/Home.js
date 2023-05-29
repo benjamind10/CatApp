@@ -168,7 +168,7 @@ function BlogPosts() {
       <Container className="mt-4">
         <Row>
           <Col md={{ size: 8, offset: 2 }}>
-            <h1 className="mb-5 text-center">All Blog Posts</h1>
+            <h2 className="mb-3 text-center">All Blog Posts</h2>
             {posts.map((post, index) => (
               <Card className="mb-5 shadow" body key={index}>
                 {post.picture && (

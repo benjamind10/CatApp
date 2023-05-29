@@ -43,78 +43,78 @@ router.get('/user/:userId', async (req, res) => {
 
 // Create a new post
 router.post(
-    '/user/:userId/create',
-    upload.single('image'),
-    async (req, res) => {
+  '/user/:userId/create',
+  upload.single('image'),
+  async (req, res) => {
+    const userId = req.params.userId;
+
+    let picture = {};
+
+    if (req.file) {
+      picture = {
+        data: fs.readFileSync(req.file.path),
+        contentType: req.file.mimetype,
+      };
+    }
+
+    const post = new Post({
+      user: userId,
+      title: req.body.title,
+      body: req.body.body,
+      picture: picture,
+    });
+
+    try {
+      const savedPost = await post.save();
+      res.json(savedPost);
+    } catch (err) {
+      res.json({ message: err });
+      console.log(err);
+    }
+  }
+);
+
+// Edit a post
+router.put(
+  '/edit/:postId/user/:userId',
+  upload.single('image'),
+  async (req, res) => {
+    try {
+      const postId = req.params.postId;
       const userId = req.params.userId;
+      const { title, body } = req.body;
 
-      let picture = {};
+      const post = await Post.findOne({ _id: postId, user: userId });
 
-      if(req.file){
-        picture = {
+      if (!post) {
+        return res.status(404).json({ message: 'Post not found' });
+      }
+
+      let updatedFields = { title, body };
+
+      if (req.file) {
+        updatedFields.picture = {
           data: fs.readFileSync(req.file.path),
           contentType: req.file.mimetype,
         };
       }
 
-      const post = new Post({
-        user: userId,
-        title: req.body.title,
-        body: req.body.body,
-        picture: picture,
-      });
+      const updatedPost = await Post.findOneAndUpdate(
+        { _id: postId, user: userId },
+        { $set: updatedFields },
+        { new: true }
+      );
 
-      try {
-        const savedPost = await post.save();
-        res.json(savedPost);
-      } catch (err) {
-        res.json({ message: err });
-        console.log(err);
+      if (!updatedPost) {
+        return res.status(404).json({ message: 'Post not found' });
       }
+
+      res.json(updatedPost);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error' });
     }
-);
-
-// Edit a post
-router.put(
-    '/edit/:postId/user/:userId',
-    upload.single('image'),
-    async (req, res) => {
-      try {
-        const postId = req.params.postId;
-        const userId = req.params.userId;
-        const { title, body } = req.body;
-
-        const post = await Post.findOne({ _id: postId, user: userId });
-
-        if (!post) {
-          return res.status(404).json({ message: 'Post not found' });
-        }
-
-        let updatedFields = { title, body };
-
-        if (req.file) {
-          updatedFields.picture = {
-            data: fs.readFileSync(req.file.path),
-            contentType: req.file.mimetype,
-          };
-        }
-
-        const updatedPost = await Post.findOneAndUpdate(
-            { _id: postId, user: userId },
-            { $set: updatedFields },
-            { new: true }
-        );
-
-        if (!updatedPost) {
-          return res.status(404).json({ message: 'Post not found' });
-        }
-
-        res.json(updatedPost);
-      } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Server error' });
-      }
-    }
+  }
 );
 
 // Delete a post
@@ -188,7 +188,7 @@ router.post('/:postId/comment', async (req, res) => {
   }
 
   const comment = {
-    user: userId, // update this to the actual user id
+    user: userId,
     body: body,
     username: username,
   };

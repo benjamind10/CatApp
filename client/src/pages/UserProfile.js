@@ -145,6 +145,7 @@ function UserProfile() {
   ) : (
     <>
       <Navigation />
+      <h2 className="mb-4 mt-2 text-center">Your Profile</h2>
       <Container className="Profile my-5">
         <Row>
           <Col md="4">

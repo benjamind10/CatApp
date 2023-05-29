@@ -56,6 +56,7 @@ function Profiles() {
   return (
     <>
       <Navigation />
+      <h2 className="mb-4 mt-2 text-center">All Profiles</h2>
       <Container className="mt-5">
         <Row>
           {users.map((user, index) => (

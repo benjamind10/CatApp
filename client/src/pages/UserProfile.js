@@ -113,9 +113,9 @@ function UserProfile() {
         fetchUserInfo();
 
         if (selectedImage) {
-          handleImageUpload(); // handle image upload
+          handleImageUpload();
         } else {
-          fetchUserInfo(); // update user info
+          fetchUserInfo();
         }
       }
     } catch (error) {
